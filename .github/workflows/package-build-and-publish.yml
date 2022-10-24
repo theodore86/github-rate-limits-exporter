@@ -1,0 +1,86 @@
+---
+name: Package and Distribute to Pypi
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+env:
+  TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+  TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+  TOX_VERSION: "3.27.1"
+
+jobs:
+  linting_and_testing:
+    uses: ./.github/workflows/linting-and-testing.yml
+
+  build_and_publish_distribution:
+    needs: ["linting_and_testing"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout SCM"
+        uses: "actions/checkout@v3.1.0"
+
+      - name: "Set up Python"
+        uses: "actions/setup-python@v4.3.0"
+        with:
+          python-version: "3.11"
+
+      - name: "Install tox automation tool"
+        run: |
+          pip3 install tox==${{ env.TOX_VERSION }}
+
+      - name: "Set requested package version"
+        id: "package_version"
+        run: |
+          version=$(echo ${{ github.ref_name }} | cut -c 2-)
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+
+      - name: "Update package version"
+        run: |
+          sed -i '/^__version__ /s/=.*$/= \"${{ steps.package_version.outputs.VERSION }}\"/' \
+            ./github_rate_limits_exporter/_version.py
+
+      - name: "Verify updated package version"
+        run: |
+          egrep -o "__version__ = \"${{ steps.package_version.outputs.VERSION }}\"" \
+            ./github_rate_limits_exporter/_version.py
+
+      - name: "Build and Publish to PYPI"
+        run: |
+          tox -e build_dist
+
+      - name: "Create PR for the latest package version"
+        uses: "peter-evans/create-pull-request@v4"
+        with:
+          commit-message: "chore: update release __version__ value in _version.py to ${{ github.ref_name }}"
+          labels: |
+            python
+            prometheus
+            github action
+          add-paths: |
+            ./github_rate_limits_exporter/_version.py
+
+  install_distribution:
+    needs: ["build_and_publish_distribution"]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.1.0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: "actions/setup-python@v4.3.0"
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: "Install tox automation tool"
+        run: |
+          pip3 install tox==${{ env.TOX_VERSION }}
+
+      - name: "Install github-rate-limits-exporter package"
+        run: |
+          tox -e install_dist -- ==${{ steps.package_version.outputs.VERSION }}

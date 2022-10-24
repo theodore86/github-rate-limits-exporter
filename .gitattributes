@@ -1,0 +1,56 @@
+## Auto detect text files and perform LF normalization
+* text=auto
+
+## DOCUMENTS
+*.md text
+
+## CONFIG
+*.ini text
+*.yaml text
+*.yml text
+*.tpl text
+*.txt text
+.gitattributes text
+.gitignore text
+.dockerignore text
+Dockerfile text
+.env text
+.bandit text
+.pylintrc text
+.pypirc text
+
+## ARCHIVES
+*.7z  binary
+*.gz  binary
+*.jar binary
+*.rar binary
+*.tar binary
+*.zip binary
+
+## GRAPHICS
+*.ai   binary
+*.bmp  binary
+*.eps  binary
+*.gif  binary
+*.ico  binary
+*.jng  binary
+*.jp2  binary
+*.jpg  binary
+*.jpeg binary
+*.jpx  binary
+*.jxr  binary
+*.pdf  binary
+*.png  binary
+*.psb  binary
+*.psd  binary
+*.svgz binary
+*.tif  binary
+*.tiff binary
+*.wbmp binary
+*.webp binary
+
+## PYTHON
+*.py text diff=python
+
+## SHELL
+*.sh text eof=lf

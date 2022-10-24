@@ -1,0 +1,3 @@
+# Requirements for [testenv:bandit] virtualenv
+
+bandit==1.7.4

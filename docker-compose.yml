@@ -1,0 +1,86 @@
+---
+version: "3.4"
+
+services:
+  exporter:
+    hostname: gh-rl-exporter
+    container_name: gh-rl-exporter
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: prom-gh-rl-exporter:latest
+    expose:
+      - 10050
+    ports:
+      - "10050:10050"
+    environment:
+      GITHUB_AUTH_TYPE: null
+      GITHUB_ACCOUNT: null
+      GITHUB_TOKEN: null
+      GITHUB_APP_ID: null
+      GITHUB_APP_INSTALLATION_ID: null
+      GITHUB_APP_PRIVATE_KEY_PATH: ${GITHUB_APP_PRIVATE_KEY_PATH:-/tmp/private-key.pem}
+      GITHUB_APP_SRC_PRIVATE_KEY_PATH: ${GITHUB_APP_SRC_PRIVATE_KEY_PATH:-/dev/null}
+    volumes:
+      - ${GITHUB_APP_SRC_PRIVATE_KEY_PATH:-/dev/null}:${GITHUB_APP_PRIVATE_KEY_PATH:-/tmp/private-key.pem}:ro
+    networks:
+      - monitoring
+
+  prometheus:
+    hostname: localhost
+    container_name: prometheus
+    image: prom/prometheus:v2.39.0
+    expose:
+      - 9090
+    ports:
+      - "9090:9090"
+    depends_on:
+      - exporter
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+    # curl -X POST http://localhost:${PROMETHEUS_UI_PORT}/-/reload (reload without restart)
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring
+
+  grafana:
+    hostname: grafana
+    container_name: grafana
+    image: grafana/grafana:9.2.4
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: null
+      GF_SECURITY_ADMIN_PASSWORD: null
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    depends_on:
+      - prometheus
+    volumes:
+      - ./monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/default.yaml
+      - ./monitoring/grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/default.yaml
+      - ./monitoring/grafana/dashboards/:/var/lib/grafana/dashboards
+    networks:
+      - monitoring
+
+  alertmanager:
+    hostname: alertmanager
+    container_name: alertmanager
+    image: prom/alertmanager:v0.24.0
+    expose:
+      - 9093
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager/:/etc/alertmanager/
+    depends_on:
+      - prometheus
+    command: --config.file=/etc/alertmanager/alertmanager.yml
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    name: monitoring
+...
