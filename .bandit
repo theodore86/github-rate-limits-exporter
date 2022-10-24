@@ -1,0 +1,3 @@
+[bandit]
+targets: github_rate_limits_exporter/
+skips: B104

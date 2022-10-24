@@ -1,0 +1,3 @@
+# Requirements for [testenv:mypy] virtualenv
+
+mypy==0.982

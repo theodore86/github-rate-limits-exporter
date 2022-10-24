@@ -1,0 +1,3 @@
+# Requirements for [testenv:pylint] virtualenv
+
+pylint==2.15.5

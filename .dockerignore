@@ -1,0 +1,6 @@
+# Ignore everything
+*
+
+# Exclude dependencies
+!requirements.txt
+!github_rate_limits_exporter/

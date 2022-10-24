@@ -1,0 +1,10 @@
+---
+datasources:
+
+  - name: Prometheus
+    type: prometheus
+    access: false
+    url: http://prometheus:9090
+    basic_auth: false
+    editable: true
+---

@@ -1,0 +1,3 @@
+# Requirements for [testenv:dc] (docker-compose) virtualenv
+
+docker-compose==1.29.2

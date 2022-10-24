@@ -1,0 +1,20 @@
+---
+groups:
+  - name: Instances
+    rules:
+      - alert: InstanceDown
+        expr: up{job="services"} < 1
+        for: 5m
+
+  - name: Github Core API Rate Limits alerts
+    rules:
+      - record: github_core_rate_limits:remaining
+        expr: github_rate_limits_core{type="remaining"}
+
+      - alert: Github Core API Rate Limits Quota Exhausted
+        expr: github_core_rate_limits:remaining == 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Github Core API Rate Limits - No Enough Quota for {{ $labels.account }}"
+          description: "Github Core API Rate Limits have been exceeded for {{ $labels.account }} account"

@@ -1,0 +1,21 @@
+---
+global:
+  smtp_from: "alertmanager@gmail.com"
+  smtp_smarthost: "smtp.gmail.com:587"
+  smtp_auth_username: "your-email@gmail.com"
+  smtp_auth_identity: "your-email@gmail.com"
+  smtp_auth_password: "your-app-password"
+
+templates:
+  - "/etc/alertmanager/template/*.tmpl"
+
+route:
+  # Default receiver
+  receiver: "email"
+  # Child route trees
+  routes: []
+
+receivers:
+  - name: "email"
+    email_configs:
+      - to: "your-email@mail.com"
