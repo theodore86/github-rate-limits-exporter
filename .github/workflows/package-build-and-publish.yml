@@ -60,6 +60,7 @@ jobs:
             github action
           add-paths: |
             ./github_rate_limits_exporter/_version.py
+          base: ${{ github.head_ref }}
 
   install_distribution:
     needs: ["build_and_publish_distribution"]
