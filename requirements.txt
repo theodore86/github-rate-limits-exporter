@@ -1,4 +1,4 @@
-cryptography==38.0.1
+cryptography==38.0.3
 PyGithub==1.56
 prometheus-client==0.15.0
 dotmap==1.3.30
