@@ -29,7 +29,7 @@ For the exporter to fetch and expose the Github API rate-limits, you need to sup
 
 ## As standalone Python command line tool (pypi)
 
-Install the distribution through [PYPI](https://pypi.org/):
+Install the tool through [pypi](https://pypi.org/project/github-rate-limits-exporter/):
 
 ```bash
 pip3 install github-rate-limits-exporter
@@ -76,7 +76,7 @@ docker build -t prometheus-gh-rate-limit-exporter:latest .
 
 ```bash
 docker run -p 10050:10050 -d \
-  --name gh-rt-exporter \
+  --name gh-rl-exporter \
   -e GITHUB_ACCOUNT=my_account_name \
   -e GITHUB_AUTH_TYPE=pat \
   -e GITHUB_TOKEN=my_token \
@@ -87,7 +87,7 @@ docker run -p 10050:10050 -d \
 
 ```bash
 docker run -p 10050:10050 -d \
-  --name gh-rt-exporter \
+  --name gh-rl-exporter \
   -e GITHUB_AUTH_TYPE=app \
   -e GITHUB_ACCOUNT=my_account_name \
   -e GITHUB_APP_ID=111111 \

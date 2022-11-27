@@ -50,6 +50,17 @@ jobs:
         run: |
           tox -e build_dist
 
+      - name: "Create PR for the latest package version"
+        uses: "peter-evans/create-pull-request@v4"
+        with:
+          commit-message: "chore: update release __version__ value in _version.py to ${{ github.ref_name }}"
+          labels: |
+            python
+            prometheus
+            github action
+          add-paths: |
+            github_rate_limits_exporter/_version.py
+
   install_distribution:
     needs: ["build_and_publish_distribution"]
     runs-on: ubuntu-latest
@@ -69,12 +80,6 @@ jobs:
       - name: "Install tox automation tool"
         run: |
           pip3 install tox==${{ env.TOX_VERSION }}
-
-      - name: "Set requested package version"
-        id: "package_version"
-        run: |
-          version=$(echo ${{ github.ref_name }} | cut -c 2-)
-          echo "VERSION=$version" >> $GITHUB_OUTPUT
 
       - name: "Install github-rate-limits-exporter package"
         run: |
