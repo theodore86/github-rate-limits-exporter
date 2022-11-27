@@ -7,7 +7,6 @@ on:
 
 env:
   TOX_VERSION: "3.27.1"
-  NODE_VERSION: "14"
 
 jobs:
   python_linting_and_testing:
@@ -42,24 +41,3 @@ jobs:
         uses: "hadolint/hadolint-action@v3.0.0"
         with:
           failure-threshold: error
-
-  conventional_commits_linting:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout source code"
-        uses: "actions/checkout@v3.1.0"
-        with:
-          fetch-depth: 0
-
-      - name: "Setup NodeJS"
-        uses: "actions/setup-node@v2"
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: "Install NPM"
-        run: npm install
-
-      - name: "Run commitlint (conventional commits)"
-        uses: "wagoid/commitlint-github-action@v5"
-        env:
-          NODE_PATH: ${{ github.workspace }}/node_modules
