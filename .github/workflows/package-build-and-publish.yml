@@ -70,6 +70,12 @@ jobs:
         run: |
           pip3 install tox==${{ env.TOX_VERSION }}
 
+      - name: "Set requested package version"
+        id: "package_version"
+        run: |
+          version=$(echo ${{ github.ref_name }} | cut -c 2-)
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+
       - name: "Install github-rate-limits-exporter package"
         run: |
           tox -e install_dist -- ==${{ steps.package_version.outputs.VERSION }}
