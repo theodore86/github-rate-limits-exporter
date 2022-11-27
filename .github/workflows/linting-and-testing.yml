@@ -7,7 +7,7 @@ on:
 
 env:
   TOX_VERSION: "3.27.1"
-  NODE_VERSION: "16"
+  NODE_VERSION: "14"
 
 jobs:
   python_linting_and_testing:
@@ -52,7 +52,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Setup NodeJS"
-        uses: "actions/setup-node@v3"
+        uses: "actions/setup-node@v2"
         with:
           node-version: ${{ env.NODE_VERSION }}
 
