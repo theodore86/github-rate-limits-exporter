@@ -8,7 +8,7 @@
 __title__ = "github_rate_limits_exporter"
 __description__ = "Prometheus exporter for Github rate-limits API"
 __url__ = "https://github.com/theodore86/github-rate-limits-exporter"
-__version__ = "0.0.0"
+__version__ = "0.1.0"
 __author__ = "Theodore Georgomanolis"
 __author_email__ = "tgeorgomanolis@gmail.com"
 __license__ = "MIT"
