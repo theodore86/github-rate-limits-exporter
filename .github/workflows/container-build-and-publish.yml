@@ -32,14 +32,14 @@ jobs:
           password: ${{ env.DOCKERHUB_PASSWORD }}
           logout: true
 
-      - name: "Retrieve latest commit SHA as image tag"
-        if: ${{ github.ref_type }} == "branch"
+      - name: "Set latest commit SHA as image tag"
+        if: startsWith(github.ref, 'refs/heads/')
         run: |
           short_sha=$(git log -1 --format=%h)
           echo "DOCKER_TAG=$short_sha" >> $GITHUB_ENV
 
-      - name: "Set pushed Git tag as image tag"
-        if: ${{ github.ref_type }} == "tag"
+      - name: "Set pushed GIT TAG as image tag"
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
           echo "DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
 
