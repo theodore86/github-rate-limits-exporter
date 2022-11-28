@@ -1,7 +1,7 @@
 import pytest
 import dotmap
+from contextlib import nullcontext as does_not_raise
 from prometheus_client.core import GaugeMetricFamily
-from .conftest import does_not_raise
 
 
 def test_add_metrics(collector, rate_limits_json, mocker):

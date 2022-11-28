@@ -56,7 +56,7 @@ setuptools.setup(
     install_requires=REQUIRES,
     entry_points={
         "console_scripts": [
-            "github-rate-limits-exporter=github_rate_limits_exporter:__main__"
+            "github-rate-limits-exporter=github_rate_limits_exporter.__main__:main"
         ]
     },
 )

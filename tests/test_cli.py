@@ -1,8 +1,8 @@
 import argparse
 import pytest
+from contextlib import nullcontext as does_not_raise
 from github_rate_limits_exporter import exceptions
 from github_rate_limits_exporter import cli
-from .conftest import does_not_raise
 
 
 @pytest.mark.parametrize('addr, expectation', [

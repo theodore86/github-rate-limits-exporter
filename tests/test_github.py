@@ -1,6 +1,6 @@
 import pytest
+from contextlib import nullcontext as does_not_raise
 from github_rate_limits_exporter.github import GithubApp
-from .conftest import does_not_raise
 
 
 @pytest.mark.parametrize('private_key, expectation', [

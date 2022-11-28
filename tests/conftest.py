@@ -2,7 +2,6 @@ import os
 import base64
 import json
 import pytest
-from contextlib import contextmanager
 from github_rate_limits_exporter import cli
 from github_rate_limits_exporter.collector import GithubRateLimitsCollector
 
@@ -85,8 +84,3 @@ def github_env_vars(request):
     yield request.param
     os.environ.clear()
     os.environ = old_environ
-
-
-@contextmanager
-def does_not_raise():
-    yield
