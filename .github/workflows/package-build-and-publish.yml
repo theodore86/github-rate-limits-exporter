@@ -50,6 +50,19 @@ jobs:
         run: |
           tox -e build_dist
 
+      - name: "Create PR for release version file"
+        uses: "peter-evans/create-pull-request@v4"
+        with:
+          commit-message: "chore: update package version file to: ${{ github.ref_name }}"
+          base: main
+          branch: "${{ github.ref_name }}-main-release"
+          labels: |
+            python
+            release
+            github_action
+          add-paths: |
+            github_rate_limits_exporter/_version.py
+
   install_distribution:
     needs: ["build_and_publish_distribution"]
     runs-on: ubuntu-latest
