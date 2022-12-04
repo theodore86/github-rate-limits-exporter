@@ -1,6 +1,8 @@
 # github-rate-limits-exporter
 
-[![Linting](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/linting-and-testing.yml/badge.svg)](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/linting-and-testing.yml)
+[![CI](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/linting-and-testing.yml/badge.svg)](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/linting-and-testing.yml)
+[![PyPI version](https://badge.fury.io/py/github-rate-limits-exporter.svg)](https://badge.fury.io/py/github-rate-limits-exporter)
+[![Python version](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)
 
 Prometheus exporter to monitor the Github API rate-limits.
 
