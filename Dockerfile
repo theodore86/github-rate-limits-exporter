@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.3
-FROM python:3.11.0-slim AS build
+FROM python:3.11.1-slim AS build
 
 RUN python3 -m venv /opt/venv
 
@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/root/.cache/ \
       --disable-pip-version-check \
       -r requirements.txt
 
-FROM python:3.11.0-slim AS run
+FROM python:3.11.1-slim AS run
 
 COPY --from=build-env /opt/venv /opt/venv
 
