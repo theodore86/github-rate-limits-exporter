@@ -2,37 +2,43 @@ import pytest
 import dotmap
 from contextlib import nullcontext as does_not_raise
 from prometheus_client.core import GaugeMetricFamily
+from tests.utils import CURRENT_TIMESTAMP
 
 
 def test_add_metrics(collector, rate_limits_json, mocker):
     mock_resources = dotmap.DotMap(rate_limits_json)
-    mocker.patch(
+    mock_unix_timestamp = mocker.patch(
         'github_rate_limits_exporter.collector.get_unix_timestamp',
-        return_value=1668193356
+        return_value=CURRENT_TIMESTAMP,
+        autospec=True
     )
     expected_metric = GaugeMetricFamily(
         'github_rate_limits_search',
         'API requests in search per hour',
         labels = ['account', 'type']
     )
-    expected_metric.add_metric(['github_account','limit'], float(30), 1668193356)
-    expected_metric.add_metric(['github_account','used'], float(12), 1668193356)
-    expected_metric.add_metric(['github_account','remaining'], float(18), 1668193356)
+    expected_metric.add_metric(['github_account','limit'], float(30), CURRENT_TIMESTAMP)
+    expected_metric.add_metric(['github_account','used'], float(12), CURRENT_TIMESTAMP)
+    expected_metric.add_metric(['github_account','remaining'], float(18), CURRENT_TIMESTAMP)
     actual_metric = collector._add_metric(
         api_name='search',
         resources=mock_resources
     )
+    assert mock_unix_timestamp.call_count == 3
     assert actual_metric == expected_metric
 
 
 def test_collect_metrics(collector, mock_rate_limits, mocker):
-    mocker.patch(
+    mock_rate_limits = mocker.patch(
         'github_rate_limits_exporter.collector.github.Github.get_rate_limit',
-        return_value=mock_rate_limits
+        return_value=mock_rate_limits,
+        autospec=True
     )
-    mocker.patch(
+
+    mock_unix_timestamp = mocker.patch(
         'github_rate_limits_exporter.collector.get_unix_timestamp',
-        return_value=1668193356
+        return_value=CURRENT_TIMESTAMP,
+        autospec=True
     )
 
     core = GaugeMetricFamily(
@@ -40,45 +46,45 @@ def test_collect_metrics(collector, mock_rate_limits, mocker):
         'API requests in core per hour',
         labels = ['account', 'type']
     )
-    core.add_metric(['github_account','limit'], float(5000), 1668193356)
-    core.add_metric(['github_account','used'], float(1), 1668193356)
-    core.add_metric(['github_account','remaining'], float(4999), 1668193356)
+    core.add_metric(['github_account','limit'], float(5000), CURRENT_TIMESTAMP)
+    core.add_metric(['github_account','used'], float(1), CURRENT_TIMESTAMP)
+    core.add_metric(['github_account','remaining'], float(4999), CURRENT_TIMESTAMP)
 
     search = GaugeMetricFamily(
         'github_rate_limits_search',
         'API requests in search per hour',
         labels = ['account', 'type']
     )
-    search.add_metric(['github_account','limit'], float(30), 1668193356)
-    search.add_metric(['github_account','used'], float(12), 1668193356)
-    search.add_metric(['github_account','remaining'], float(18), 1668193356)
+    search.add_metric(['github_account','limit'], float(30), CURRENT_TIMESTAMP)
+    search.add_metric(['github_account','used'], float(12), CURRENT_TIMESTAMP)
+    search.add_metric(['github_account','remaining'], float(18), CURRENT_TIMESTAMP)
 
     graphql = GaugeMetricFamily(
         'github_rate_limits_graphql',
         'API requests in graphql per hour',
         labels = ['account', 'type']
     )
-    graphql.add_metric(['github_account','limit'], float(5000), 1668193356)
-    graphql.add_metric(['github_account','used'], float(7), 1668193356)
-    graphql.add_metric(['github_account','remaining'], float(4993), 1668193356)
+    graphql.add_metric(['github_account','limit'], float(5000), CURRENT_TIMESTAMP)
+    graphql.add_metric(['github_account','used'], float(7), CURRENT_TIMESTAMP)
+    graphql.add_metric(['github_account','remaining'], float(4993), CURRENT_TIMESTAMP)
 
     integration_manifest = GaugeMetricFamily(
         'github_rate_limits_integration_manifest',
         'API requests in integration_manifest per hour',
         labels = ['account', 'type']
     )
-    integration_manifest.add_metric(['github_account','limit'], float(5000), 1668193356)
-    integration_manifest.add_metric(['github_account','used'], float(1), 1668193356)
-    integration_manifest.add_metric(['github_account','remaining'], float(4999), 1668193356)
+    integration_manifest.add_metric(['github_account','limit'], float(5000), CURRENT_TIMESTAMP)
+    integration_manifest.add_metric(['github_account','used'], float(1), CURRENT_TIMESTAMP)
+    integration_manifest.add_metric(['github_account','remaining'], float(4999), CURRENT_TIMESTAMP)
 
     code_scanning_upload = GaugeMetricFamily(
         'github_rate_limits_code_scanning_upload',
         'API requests in code_scanning_upload per hour',
         labels = ['account', 'type']
     )
-    code_scanning_upload.add_metric(['github_account','limit'], float(500), 1668193356)
-    code_scanning_upload.add_metric(['github_account','used'], float(20), 1668193356)
-    code_scanning_upload.add_metric(['github_account','remaining'], float(480), 1668193356)
+    code_scanning_upload.add_metric(['github_account','limit'], float(500), CURRENT_TIMESTAMP)
+    code_scanning_upload.add_metric(['github_account','used'], float(20), CURRENT_TIMESTAMP)
+    code_scanning_upload.add_metric(['github_account','remaining'], float(480), CURRENT_TIMESTAMP)
 
     expected_metrics = [
         core, search, graphql,
@@ -87,6 +93,8 @@ def test_collect_metrics(collector, mock_rate_limits, mocker):
     ]
 
     assert collector.collect() == expected_metrics
+    assert mock_unix_timestamp.call_count == 15
+    assert mock_rate_limits.call_count == 1
 
 
 @pytest.mark.parametrize('resources, expectation', [
