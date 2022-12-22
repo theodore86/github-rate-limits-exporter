@@ -9,6 +9,7 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     image: prom-gh-rl-exporter:latest
+    restart: on-failure:5
     expose:
       - 10050
     ports:
@@ -79,6 +80,25 @@ services:
     command: --config.file=/etc/alertmanager/alertmanager.yml
     networks:
       - monitoring
+
+  portainer:
+    hostname: dashboard
+    container_name: portainer
+    image: portainer/portainer-ce:2.16.2
+    expose:
+      - 9443
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    command: -H unix:///var/run/docker.sock
+    networks:
+      - monitoring
+
+volumes:
+  portainer_data:
+
 
 networks:
   monitoring:
