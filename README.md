@@ -21,8 +21,9 @@ You can up the rate limit to *15,000* with an enterprise account but the problem
 *If your service/program needs to make consistent and/or sustained requests to Github's APIs,</br>
 you will have to work around and make the most of Github's rate limits.*
 
-So, the *Prometheus Github rate-limits exporter* was introduced to expose the *remaining*, *used* and *limit*</br>
-(quotas) information per Github API as metrics in order to create alerting events and (Grafana) monitoring dashboards.
+So, the *Prometheus Github rate-limits exporter* was introduced to expose the *remaining*, *used*, *limit*</br>
+(quotas) and *reset* (rate-limit window resets in UTC seconds) information per Github API as metrics in order</br>
+to create alerting events and (Grafana) monitoring dashboards.
 
 For the exporter to fetch and expose the Github API rate-limits, you need to supply:
 

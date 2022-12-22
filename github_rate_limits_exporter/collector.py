@@ -119,4 +119,7 @@ class GithubRateLimitsCollector(Collector):
         gauge.add_metric(
             [self._account, "remaining"], float(limits.remaining), get_unix_timestamp()
         )
+        gauge.add_metric(
+            [self._account, "reset"], float(limits.reset), get_unix_timestamp()
+        )
         return gauge
