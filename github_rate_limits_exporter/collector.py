@@ -11,14 +11,15 @@
 
 import logging
 from typing import Iterable, Optional
-import github
+
 import dotmap
+import github
 from prometheus_client import Metric
 from prometheus_client.core import GaugeMetricFamily
 from prometheus_client.registry import Collector
+
 from github_rate_limits_exporter.constants import DEFAULT_RATE_LIMITS
 from github_rate_limits_exporter.utils import get_unix_timestamp
-
 
 logger = logging.getLogger(__name__)
 

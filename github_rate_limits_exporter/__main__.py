@@ -6,6 +6,7 @@
 """
 
 import sys
+
 from github_rate_limits_exporter import main
 
 sys.exit(main(sys.argv[1:]))

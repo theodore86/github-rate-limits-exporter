@@ -1,0 +1,2 @@
+# Requirements for [testenv:isort] virtualenv
+isort==5.11.4

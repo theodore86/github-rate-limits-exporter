@@ -5,15 +5,16 @@
     Prometheus exporter utilities/helper functions.
 """
 
-import binascii
-import socket
-import sys
-import signal
 import base64
+import binascii
 import datetime
 import logging
+import signal
+import socket
+import sys
 from types import FrameType
 from typing import Optional
+
 from github_rate_limits_exporter.constants import DEFAULT_LOG_FMT
 
 

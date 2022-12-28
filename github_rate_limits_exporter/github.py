@@ -13,11 +13,12 @@
 
 import io
 import logging
+from dataclasses import InitVar, dataclass, field
 from typing import TextIO, Union
-from dataclasses import dataclass, field, InitVar
-from github import GithubIntegration
-from github_rate_limits_exporter.utils import base64_decode
 
+from github import GithubIntegration
+
+from github_rate_limits_exporter.utils import base64_decode
 
 logger = logging.getLogger(__name__)
 

@@ -5,9 +5,10 @@
     Prometheus exporter command line interface.
 """ ""
 
-import os
 import argparse
-from typing import Optional, List, NoReturn, Union
+import os
+from typing import List, NoReturn, Optional, Union
+
 from github_rate_limits_exporter.exceptions import ArgumentError
 from github_rate_limits_exporter.utils import is_ipv4_addr, is_ipv6_addr
 

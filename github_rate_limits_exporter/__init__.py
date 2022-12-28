@@ -16,14 +16,15 @@
 import argparse
 import logging
 import time
-from typing import Optional, List
-from prometheus_client import start_http_server, REGISTRY
+from typing import List, Optional
+
+from prometheus_client import REGISTRY, start_http_server
+
 from github_rate_limits_exporter.cli import parsecli
 from github_rate_limits_exporter.collector import GithubRateLimitsCollector
 from github_rate_limits_exporter.exceptions import ERROR_STATUS_ON_EXCEPTIONS
 from github_rate_limits_exporter.github import GithubApp
-from github_rate_limits_exporter.utils import initialize_logger, GracefulShutdown
-
+from github_rate_limits_exporter.utils import GracefulShutdown, initialize_logger
 
 logger = logging.getLogger(__name__)
 

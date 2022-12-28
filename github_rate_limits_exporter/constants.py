@@ -7,6 +7,5 @@
 
 import dotmap
 
-
 DEFAULT_LOG_FMT = "[%(levelname)s - %(asctime)s]: %(message)s"
 DEFAULT_RATE_LIMITS = dotmap.DotMap(limit=0.0, used=0.0, remaining=0.0)
