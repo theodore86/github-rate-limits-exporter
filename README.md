@@ -75,6 +75,12 @@ Clone the repositroy and build the docker container image:
 docker build -t prometheus-gh-rate-limit-exporter:latest .
 ```
 
+or pull directly from [Docker Hub](https://hub.docker.com/r/theodore86/prometheus-gh-rate-limit-exporter):
+
+```bash
+docker pull theodore86/prometheus-gh-rate-limit-exporter:latest
+```
+
 ### Run as PAT Github authentication type
 
 ```bash
