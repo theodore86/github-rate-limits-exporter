@@ -1,6 +1,6 @@
 # github-rate-limits-exporter
 
-[![CI](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-and-publish.yml/badge.svg)](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-and-publish.yml)
+[![CI](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-test-and-publish.yml/badge.svg)](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-test-and-publish.yml)
 [![PyPI version](https://badge.fury.io/py/github-rate-limits-exporter.svg)](https://badge.fury.io/py/github-rate-limits-exporter)
 [![Python version](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)
 
