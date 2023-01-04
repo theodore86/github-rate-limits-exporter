@@ -75,10 +75,10 @@ jobs:
           docker_network: "${{ env.DOCKER_NETWORK }}"
           options: >
             --detach
-            -e GITHUB_ACCOUNT=${{ env.GITHUB_ACTOR }}
+            -e GITHUB_ACCOUNT=${{ env.DOCKER_GITHUB_RL_NAME }}
             -e GITHUB_AUTH_TYPE=pat
             -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-            --name {{ env.DOCKER_GITHUB_RL_NAME }}
+            --name ${{ env.DOCKER_GITHUB_RL_NAME }}
           run: >
             python3 -m github_rate_limits_exporter
 
