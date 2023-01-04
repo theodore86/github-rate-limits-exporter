@@ -1,0 +1,104 @@
+---
+name: Static code analysis, Testing, Container building, testing and publish.
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+    branches:
+      - "main"
+
+concurrency:
+  group: ${{ github.workflow }}
+
+env:
+  DOCKERHUB_REPO: "theodore86"
+  DOCKERHUB_NAMESPACE: "prometheus-gh-rate-limit-exporter"
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+  DOCKER_NETWORK: "exporter-net"
+  DOCKER_GITHUB_RL_NAME: "exporter"
+  DOCKER_GITHUB_RL_PORT: 10050
+  DOCKER_GITHUB_RL_TIMEOUT: "30s"
+  DOCKER_GITHUB_RL_INTERVAL: "5s"
+
+jobs:
+  linting_and_testing:
+    uses: ./.github/workflows/linting-and-testing.yml
+  build_test_and_publish_docker_image:
+    needs: ["linting_and_testing"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout SCM"
+        uses: "actions/checkout@v3.2.0"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: "Login to docker registry"
+        if: github.ref_type == 'tag'
+        uses: "docker/login-action@v2.1.0"
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_PASSWORD }}
+          logout: true
+
+      - name: "Latest commit SHA as image tag"
+        if: startsWith(github.ref, 'refs/heads/')
+        run: |
+          short_sha=$(git log -1 --format=%h)
+          echo "DOCKER_TAG=$short_sha" >> $GITHUB_ENV
+
+      - name: "Set pushed GIT TAG as image tag"
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: "Build the docker container image"
+        uses: "docker/build-push-action@v3.2.0"
+        with:
+          context: .
+          load: true
+          file: Dockerfile
+          tags: |
+            ${{ env.DOCKERHUB_NAMESPACE }}:${{ env.DOCKER_TAG }}
+
+      - name: "Test container - Create network bridge"
+        run: |
+          docker container rm -f ${{ env.DOCKER_GITHUB_RL_NAME }} || true
+          docker network rm ${{ env.DOCKER_NETWORK }} || true
+          docker network create ${{ env.DOCKER_NETWORK }}
+
+      - name: "Test container - Execute github rate-limit exporter"
+        uses: "addnab/docker-run-action@v3"
+        with:
+          image: "${{ env.DOCKERHUB_NAMESPACE }}:${{ env.DOCKER_TAG }}"
+          docker_network: "${{ env.DOCKER_NETWORK }}"
+          options: >
+            --detach
+            -e GITHUB_ACCOUNT=${{ env.GITHUB_ACTOR }}
+            -e GITHUB_AUTH_TYPE=pat
+            -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            --name {{ env.DOCKER_GITHUB_RL_NAME }}
+          run: >
+            python3 -m github_rate_limits_exporter
+
+      - name: "Test container - Execute http client on metrics endpoint"
+        uses: "addnab/docker-run-action@v3"
+        with:
+          image: "jwilder/dockerize"
+          docker_network: "${{ env.DOCKER_NETWORK }}"
+          run: >
+            dockerize
+            -wait http://${{ env.DOCKER_GITHUB_RL_NAME }}:${{ env.DOCKER_GITHUB_RL_PORT }}/metrics
+            -timeout ${{ env.DOCKER_GITHUB_RL_TIMEOUT }}
+            -wait-retry-interval ${{ env.DOCKER_GITHUB_RL_INTERVAL }}
+
+      - name: "Push the docker container image"
+        uses: "docker/build-push-action@v3.2.0"
+        with:
+          push: ${{ github.ref_type == 'tag' }}
+          context: .
+          file: Dockerfile
+          tags: |
+            ${{ env.DOCKERHUB_REPO }}/${{ env.DOCKERHUB_NAMESPACE }}:${{ env.DOCKER_TAG }}
+            ${{ env.DOCKERHUB_REPO }}/${{ env.DOCKERHUB_NAMESPACE }}:latest
