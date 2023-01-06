@@ -1,5 +1,5 @@
 ---
-name: Static code analysis, Testing, Container building, testing and publish.
+name: CI
 on:
   push:
     tags:
