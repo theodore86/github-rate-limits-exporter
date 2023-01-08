@@ -103,7 +103,7 @@ jobs:
           severity: "HIGH,CRITICAL"
 
       - name: "Push the docker container image"
-        uses: "docker/build-push-action@v3.2.0"vim .g
+        uses: "docker/build-push-action@v3.2.0"
         with:
           push: ${{ github.ref_type == 'tag' }}
           context: .
