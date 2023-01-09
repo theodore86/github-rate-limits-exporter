@@ -40,4 +40,4 @@ ENV PYTHONUNBUFFERED=1
 
 EXPOSE 10050
 
-ENTRYPOINT ["python", "-m", "github_rate_limits_exporter", "-vvv"]
+ENTRYPOINT ["python", "-m", "github_rate_limits_exporter"]

@@ -22,6 +22,7 @@ services:
       GITHUB_APP_INSTALLATION_ID: null
       GITHUB_APP_PRIVATE_KEY_PATH: ${GITHUB_APP_PRIVATE_KEY_PATH:-/tmp/private-key.pem}
       GITHUB_APP_SRC_PRIVATE_KEY_PATH: ${GITHUB_APP_SRC_PRIVATE_KEY_PATH:-/dev/null}
+      GITHUB_LOG_LEVEL: null
     volumes:
       - ${GITHUB_APP_SRC_PRIVATE_KEY_PATH:-/dev/null}:${GITHUB_APP_PRIVATE_KEY_PATH:-/tmp/private-key.pem}:ro
     networks:

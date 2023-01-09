@@ -79,10 +79,12 @@ def test_mutual_inclusive_args(namespace, argparser, expectation):
     {
      'GITHUB_AUTH_TYPE': 'pat',
      'GITHUB_TOKEN': 'token',
-     'GITHUB_ACCOUNT': 'test'
+     'GITHUB_ACCOUNT': 'test',
+     'GITHUB_LOG_LEVEL': '4'
     }], indirect=True)
 def test_github_pat_auth_env_variables(github_env_vars):
     args = cli.parsecli(['--listen-port', '5000'])
     assert args.github_account == github_env_vars['GITHUB_ACCOUNT']
     assert args.github_auth_type == github_env_vars['GITHUB_AUTH_TYPE']
     assert args.github_token == github_env_vars['GITHUB_TOKEN']
+    assert args.verbosity == github_env_vars['GITHUB_LOG_LEVEL']

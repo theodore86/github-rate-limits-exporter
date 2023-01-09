@@ -97,7 +97,6 @@ jobs:
         uses: "aquasecurity/trivy-action@0.8.0"
         with:
           image-ref: "${{ env.DOCKERHUB_NAMESPACE }}:${{ env.DOCKER_TAG }}"
-          format: "table"
           exit-code: "1"
           ignore-unfixed: true
           severity: "HIGH,CRITICAL"

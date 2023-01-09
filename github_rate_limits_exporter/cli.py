@@ -89,9 +89,12 @@ def parsecli(
     parser.add_argument(
         "-v",
         dest="verbosity",
-        default=0,
+        default=os.getenv("GITHUB_LOG_LEVEL") or 3,
         action="count",
-        help="Increase verbosity level (-vv for more)",
+        help=(
+            "Increase (-v) the logging verbosity level (up to 5 times),"
+            "default level: INFO."
+        ),
     )
     args, __ = parser.parse_known_args(args=argv)
     _check_mutual_inclusive_arguments(args, parser)

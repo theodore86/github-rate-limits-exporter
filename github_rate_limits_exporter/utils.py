@@ -69,7 +69,7 @@ def initialize_logger(level: int) -> None:
     console = logging.StreamHandler(sys.stdout)
     template = logging.Formatter(DEFAULT_LOG_FMT)
     console.setFormatter(template)
-    verbosity_level = levels.get(level, logging.DEBUG)
+    verbosity_level = levels.get(int(level), logging.DEBUG)
     logger = logging.getLogger()
     logger.addHandler(console)
     logger.setLevel(verbosity_level)
