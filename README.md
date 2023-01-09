@@ -90,6 +90,7 @@ docker run -p 10050:10050 -d \
   -e GITHUB_ACCOUNT=my_account_name \
   -e GITHUB_AUTH_TYPE=pat \
   -e GITHUB_TOKEN=my_token \
+  -e LOGLEVEL=INFO \
   prometheus-gh-rate-limit-exporter:latest
 ```
 
@@ -103,6 +104,7 @@ docker run -p 10050:10050 -d \
   -e GITHUB_APP_ID=111111 \
   -e GITHUB_APP_INSTALLATION_ID=22222222 \
   -e GITHUB_APP_PRIVATE_KEY_PATH=/app/key.pem \
+  -e LOGLEVEL=INFO \
   --mount type=bind,source=/ws/key.pem,target=/app/key.pem,readonly \
   prometheus-gh-rate-limit-exporter:latest
 ```

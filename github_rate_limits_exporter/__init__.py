@@ -15,6 +15,7 @@
 
 import argparse
 import logging
+import os
 import time
 from typing import List, Optional
 
@@ -27,7 +28,8 @@ from github_rate_limits_exporter.github import GithubApp
 from github_rate_limits_exporter.utils import GracefulShutdown, initialize_logger
 
 logger = logging.getLogger(__name__)
-
+log_level = logging.getLevelName(os.environ.get('LOGLEVEL', 'INFO').upper())
+logger.setLevel(log_level)
 
 def _get_access_token(args: argparse.Namespace) -> str:
     if args.github_auth_type == "pat":
