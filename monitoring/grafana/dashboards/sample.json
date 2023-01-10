@@ -510,7 +510,10 @@
   "refresh": "10s",
   "schemaVersion": 37,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "github",
+    "monitoring"
+  ],
   "templating": {
     "list": [
       {
