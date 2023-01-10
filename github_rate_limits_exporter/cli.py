@@ -9,6 +9,7 @@ import argparse
 import os
 from typing import List, NoReturn, Optional, Union
 
+from github_rate_limits_exporter._version import __version__
 from github_rate_limits_exporter.exceptions import ArgumentError
 from github_rate_limits_exporter.utils import is_ipv4_addr, is_ipv6_addr
 
@@ -32,21 +33,21 @@ def parsecli(
         choices=["pat", "app"],
         default=os.getenv("GITHUB_AUTH_TYPE"),
         required=not os.getenv("GITHUB_AUTH_TYPE"),
-        help="Github token authentication type",
+        help="github token authentication type",
     )
     parser.add_argument(
         "--github-account",
         dest="github_account",
         default=os.getenv("GITHUB_ACCOUNT"),
         required=not os.getenv("GITHUB_ACCOUNT"),
-        help="Github account name",
+        help="github account name",
     )
     parser.add_argument(
         "--github-token",
         dest="github_token",
         nargs="?",
         default=os.getenv("GITHUB_TOKEN"),
-        help="Github personal access token (PAT)",
+        help="github personal access token (PAT)",
     )
     parser.add_argument(
         "--github-app-id",
@@ -54,7 +55,7 @@ def parsecli(
         nargs="?",
         default=os.getenv("GITHUB_APP_ID"),
         type=int,
-        help="Github Application (integration) identifier",
+        help="github application (integration) identifier",
     )
     parser.add_argument(
         "--github-app-installation-id",
@@ -62,7 +63,7 @@ def parsecli(
         nargs="?",
         default=os.getenv("GITHUB_APP_INSTALLATION_ID"),
         type=int,
-        help="Github Installation ID for App/Org Pair",
+        help="github installation ID for App/Org Pair",
     )
     parser.add_argument(
         "--github-app-private-key-path",
@@ -70,31 +71,31 @@ def parsecli(
         nargs="?",
         default=os.getenv("GITHUB_APP_PRIVATE_KEY_PATH"),
         type=argparse.FileType("r"),
-        help="Github App private key path (optionally base64 encoded)",
+        help="github App private key path (optionally base64 encoded)",
     )
     parser.add_argument(
         "--bind-address",
         dest="bind_addr",
         default="0.0.0.0",
         type=ip_address,
-        help="Exporter HTTP bind address, (default: 0.0.0.0)",
+        help="exporter HTTP bind address, (default: 0.0.0.0)",
     )
     parser.add_argument(
         "--listen-port",
         dest="listen_port",
         default=10050,
         type=listen_port,
-        help="Exporter HTTP listen port, (default: %(default)s)",
+        help="exporter HTTP listen port, (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--version", "-V", action="version", version=f"%(prog)s: {__version__}"
     )
     parser.add_argument(
         "-v",
         dest="verbosity",
         default=os.getenv("GITHUB_LOG_LEVEL") or 3,
         action="count",
-        help=(
-            "Increase (-v) the logging verbosity level (up to 5 times),"
-            "default level: INFO."
-        ),
+        help="logging verbosity (up to 5 times),default level: INFO",
     )
     args, __ = parser.parse_known_args(args=argv)
     _check_mutual_inclusive_arguments(args, parser)
