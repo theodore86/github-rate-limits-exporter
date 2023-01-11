@@ -87,6 +87,7 @@ docker pull theodore86/prometheus-gh-rate-limit-exporter:latest
 ```bash
 docker run -p 10050:10050 -d \
   --name gh-rl-exporter \
+  --restart on-failure \
   -e GITHUB_ACCOUNT=my_account_name \
   -e GITHUB_AUTH_TYPE=pat \
   -e GITHUB_TOKEN=my_token \
@@ -99,6 +100,7 @@ docker run -p 10050:10050 -d \
 ```bash
 docker run -p 10050:10050 -d \
   --name gh-rl-exporter \
+  --restart on-failure \
   -e GITHUB_AUTH_TYPE=app \
   -e GITHUB_ACCOUNT=my_account_name \
   -e GITHUB_APP_ID=111111 \
