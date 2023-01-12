@@ -125,3 +125,14 @@ def is_ipv6_addr(ip_addr: str) -> bool:
     except socket.error:
         return False
     return True
+
+
+def extend_datetime_now(weeks: int = 1) -> datetime.datetime:
+    """
+    Extend the current date in UTC by X number of weeks.
+
+    :params int weeks: Number of weeks
+    :returns datetime.datetime: The current datetime object extend by X weeks.
+    """
+    now = datetime.datetime.utcnow()
+    return now + datetime.timedelta(weeks=weeks)
