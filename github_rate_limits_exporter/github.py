@@ -11,12 +11,14 @@
         - Installation ID.
 """
 
+import datetime
 import io
 import logging
 from dataclasses import InitVar, dataclass, field
 from typing import TextIO, Union
 
 from github import GithubIntegration
+from github.InstallationAuthorization import InstallationAuthorization
 
 from github_rate_limits_exporter.utils import base64_decode
 
@@ -91,6 +93,47 @@ class GithubApp:
         self._private_key = value  # type: ignore[attr-defined]
 
     @property
-    def access_token(self) -> str:
-        """Github App (global) access token"""
-        return self._app.get_access_token(self.installation_id).token
+    def access_token(self) -> InstallationAuthorization:
+        """Github App (installation) access token"""
+        return self._app.get_access_token(self.installation_id)
+
+
+@dataclass
+class AccessToken:
+    """
+    Represents an Github Access Token
+
+    :param str token: The Github token.
+    :param datetime | None expires_at: Token expiration UTC datetime.
+    :raises ValueError: If the token expiration is not a datetime object.
+    """
+
+    token: str
+    _expiration: InitVar[datetime.datetime]
+    _expires_at: datetime.datetime = field(init=False)
+
+    def __post_init__(self, _expiration: datetime.datetime) -> None:
+        self.expires_at = _expiration
+
+    @property
+    def expires_at(self) -> datetime.datetime:
+        """Token expiration time in UTC"""
+        return self._expires_at
+
+    @expires_at.setter
+    def expires_at(self, value: datetime.datetime) -> None:
+        if not isinstance(value, datetime.datetime):
+            raise ValueError(
+                f"Token expiration time must be a datetime type: {value!r}"
+            )
+        self._expires_at = value
+
+    def has_expired(self, seconds: int = 300) -> bool:
+        """
+        Validates the token expiration time.
+        :seconds int: Seconds to extended the current time.
+        :returns bool: True or False, token has expired compared to the current time.
+        """
+        now = datetime.datetime.utcnow()
+        now = now + datetime.timedelta(seconds=seconds)
+        return self.expires_at < now

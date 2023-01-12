@@ -1,6 +1,9 @@
+from datetime import datetime
+import iso8601
 import pytest
 from contextlib import nullcontext as does_not_raise
-from github_rate_limits_exporter.github import GithubApp
+from github_rate_limits_exporter.github import GithubApp, AccessToken
+from tests.utils import CURRENT_TIME
 
 
 @pytest.mark.parametrize('private_key, expectation', [
@@ -43,3 +46,12 @@ def test_github_app_installation_id(install_id, expectation, request):
             request.getfixturevalue('private_key_str'),
             install_id
         )
+
+
+@pytest.mark.parametrize('token, expires_at, expectation', [
+    ('value', CURRENT_TIME, does_not_raise()),
+    ('another_value', 'date', pytest.raises(ValueError))
+])
+def test_access_token(token, expires_at, expectation):
+    with expectation:
+         AccessToken(token, expires_at)
