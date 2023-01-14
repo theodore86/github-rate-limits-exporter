@@ -1,5 +1,7 @@
 import logging
+
 import pytest
+
 from github_rate_limits_exporter import utils
 
 

@@ -1,8 +1,8 @@
-from datetime import datetime
-import iso8601
-import pytest
 from contextlib import nullcontext as does_not_raise
-from github_rate_limits_exporter.github import GithubApp, AccessToken
+
+import pytest
+
+from github_rate_limits_exporter.github import AccessToken, GithubApp
 from tests.utils import CURRENT_TIME
 
 
@@ -55,3 +55,12 @@ def test_github_app_installation_id(install_id, expectation, request):
 def test_access_token(token, expires_at, expectation):
     with expectation:
          AccessToken(token, expires_at)
+
+
+@pytest.mark.parametrize('date, expectation', [
+    ('2022-12-25 10:25:38', True),
+    ('2022-12-23 12:30:45', False)
+])
+def test_access_token_has_expired(access_token, freezer, date, expectation):
+    freezer.move_to(date)
+    assert access_token.has_expired() == expectation

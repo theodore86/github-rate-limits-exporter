@@ -1,8 +1,11 @@
-import os
 import base64
+import datetime
 import json
+import os
+
 import pytest
-from github_rate_limits_exporter import cli
+
+from github_rate_limits_exporter import cli, github
 from github_rate_limits_exporter.collector import GithubRateLimitsCollector
 
 
@@ -84,3 +87,10 @@ def github_env_vars(request):
     yield request.param
     os.environ.clear()
     os.environ = old_environ
+
+
+@pytest.fixture(scope='session')
+def access_token():
+    return github.AccessToken(
+        'some-value', datetime.datetime(2022, 12, 24, 9 ,25, 38)
+    )
