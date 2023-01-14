@@ -1,7 +1,9 @@
-import pytest
-import dotmap
 from contextlib import nullcontext as does_not_raise
+
+import dotmap
+import pytest
 from prometheus_client.core import GaugeMetricFamily
+
 from tests.utils import CURRENT_TIMESTAMP
 
 
