@@ -2,25 +2,33 @@
     github_rate_limits_exporter.github
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Github authentication as a Github APP, alternative to Personal Access Token.
+    Github authentication using:
 
-    Requires:
+      - GithubApp (Installation Access Token)
+      - Personal Access Token (PAT)
+
+    To aquire access token from GithubApp:
 
         - Application ID.
         - Private key (PEM format).
         - Installation ID.
+
+    - PAT access token lifetime is defined by the user.
+    - IAT access token (GithubApp) lifetime is at 1 hour.
 """
 
+import argparse
 import datetime
 import io
 import logging
 from dataclasses import InitVar, dataclass, field
 from typing import TextIO, Union
 
-from github import GithubIntegration
+import dotmap
+from github import Github, GithubIntegration
 from github.InstallationAuthorization import InstallationAuthorization
 
-from github_rate_limits_exporter.utils import base64_decode
+from github_rate_limits_exporter.utils import base64_decode, extend_datetime_now
 
 logger = logging.getLogger(__name__)
 
@@ -30,40 +38,39 @@ class GithubApp:
     """
     Represents an Github Application.
 
-    :param int integration_id: Github App identifier (JWT issuer).
-    :param str private_key: Github App private key (will be used to sign the JWT token).
-    :param int installation_id: Github App installation identifier.
+    :param argparse.Namespace: Namespace object to store the initial app attributes.
+
+      - installation_id (str): Github App identifier (JWT issuer).
+      - private_key (str): Github App private key (will be used to sign the JWT token).
+      - installation_id (int): Github App installation identifier.
+
     :raises ValueError: Github App arguments of invalid type.
     """
 
-    _integration_id: InitVar[int]
-    _private_key: InitVar[str]
-    _installation_id: InitVar[int]
-    app: GithubIntegration = field(init=False)
+    args: InitVar[argparse.Namespace]
+    _app: GithubIntegration = field(init=False)
 
-    def __post_init__(
-        self, _integration_id: int, _private_key: str, _installation_id: int
-    ) -> None:
-        self.integration_id = _integration_id
-        self.private_key = _private_key
-        self.installation_id = _installation_id
-        self._app = GithubIntegration(self.integration_id, self.private_key)
+    def __post_init__(self, args: argparse.Namespace) -> None:
+        self.app_id = args.github_app_id
+        self.private_key = args.github_app_private_key_path
+        self.installation_id = args.github_app_installation_id
+        self._app = GithubIntegration(self.app_id, self.private_key)
 
     @property
-    def integration_id(self) -> int:
+    def app_id(self) -> int:
         """Github App Integration Identifier (App ID)"""
-        return self._integration_id  # type: ignore[attr-defined]
+        return self._app_id
 
-    @integration_id.setter
-    def integration_id(self, value: int) -> None:
+    @app_id.setter
+    def app_id(self, value: int) -> None:
         if not isinstance(value, int):
-            raise ValueError(f"Github App integration id must be a int type: {value!r}")
-        self._integration_id = value  # type: ignore[attr-defined]
+            raise ValueError(f"Github App id must be a int type: {value!r}")
+        self._app_id = value
 
     @property
     def installation_id(self) -> int:
         """Github App Installation Identifier"""
-        return self._installation_id  # type: ignore[attr-defined]
+        return self._installation_id
 
     @installation_id.setter
     def installation_id(self, value: int) -> None:
@@ -71,12 +78,12 @@ class GithubApp:
             raise ValueError(
                 f"Github App installation id must be a int type: {value!r}"
             )
-        self._installation_id = value  # type: ignore[attr-defined]
+        self._installation_id = value
 
     @property
     def private_key(self) -> str:
         """Github App private key"""
-        return self._private_key  # type: ignore[attr-defined]
+        return self._private_key
 
     @private_key.setter
     def private_key(self, value: Union[TextIO, str]) -> None:
@@ -89,31 +96,50 @@ class GithubApp:
         if not isinstance(value, str):
             raise ValueError(f"Github App private key must be a string type: {value!r}")
         value = base64_decode(value)
-        logger.debug("Private key: %s", value)
-        self._private_key = value  # type: ignore[attr-defined]
+        self._private_key = value
 
     @property
     def access_token(self) -> InstallationAuthorization:
-        """Github App (installation) access token"""
+        """Github App (global)) access token"""
         return self._app.get_access_token(self.installation_id)
 
 
 @dataclass
-class AccessToken:
+class GithubToken:
     """
-    Represents an Github Access Token
+    Represents an Github (Access) Token.
 
-    :param str token: The Github token.
-    :param datetime | None expires_at: Token expiration UTC datetime.
-    :raises ValueError: If the token expiration is not a datetime object.
+    :param str token: The Github token as string object type.
+    :param datetime expires_at: Token expiration (UTC) datetime object type.
+    :raises ValueError:
+      - If the token is not a string object type.
+      - If the token expiration is not a datetime object type.
     """
 
-    token: str
-    _expiration: InitVar[datetime.datetime]
+    _init_token: InitVar[str]
+    _init_expires_at: InitVar[datetime.datetime]
+    _token: str = field(init=False)
     _expires_at: datetime.datetime = field(init=False)
 
-    def __post_init__(self, _expiration: datetime.datetime) -> None:
-        self.expires_at = _expiration
+    def __post_init__(
+        self, _init_token: str, _init_expires_at: datetime.datetime
+    ) -> None:
+        self.token = _init_token
+        self.expires_at = _init_expires_at
+
+    def __str__(self) -> str:
+        return f"expires_at: {self._expires_at}"
+
+    @property
+    def token(self) -> str:
+        """Github Token"""
+        return self._token
+
+    @token.setter
+    def token(self, value: str) -> None:
+        if not isinstance(value, str):
+            raise ValueError(f"Github token must be a string type: {value!r}")
+        self._token = value
 
     @property
     def expires_at(self) -> datetime.datetime:
@@ -132,8 +158,48 @@ class AccessToken:
         """
         Validates the token expiration time.
         :seconds int: Seconds to extended the current time.
-        :returns bool: True or False, token has expired compared to the current time.
+        :returns bool: ``True`` or ``False`` if token has expired compared to the current time.
         """
         now = datetime.datetime.utcnow()
         now = now + datetime.timedelta(seconds=seconds)
         return self.expires_at < now
+
+
+@dataclass
+class GithubRateLimitsRequester:
+    """
+    Represents a requester to ``GET`` the Github API rate-limits.
+
+    :param argparse.Namespace: Argparse object to store the initial requester attributes.
+        Namespace attributes are populated by the command-line interface.
+
+      - token (GithubToken): The Github Access Token (PAT or APP).
+      - api (Github API): The Github API to ``GET`` the rate-limit data from.
+    """
+
+    args: InitVar[argparse.Namespace]
+
+    def __post_init__(self, args: argparse.Namespace) -> None:
+        self.token = self._initialize_token(args)
+        self._api = Github(login_or_token=self.token.token)
+
+    def _initialize_token(self, args: argparse.Namespace) -> GithubToken:
+        if args.github_auth_type == "pat":
+            return GithubToken(args.github_token, extend_datetime_now(weeks=999))
+        self._app = GithubApp(args)
+        token = self._app.access_token
+        return GithubToken(token.token, token.expires_at)
+
+    def get_rate_limits(self) -> dotmap.DotMap:
+        """Retrieve the Github API rate-limits"""
+        if self.token.has_expired():
+            logger.debug("Github Token will expired at: %s", self.token.expires_at)
+            self._refresh_token()
+        rate_limits = self._api.get_rate_limit()
+        return dotmap.DotMap(rate_limits.raw_data)
+
+    def _refresh_token(self) -> None:
+        logger.debug("Requesting new Github Token")
+        token = self._app.access_token
+        self.token = GithubToken(token.token, token.expires_at)
+        self._api = Github(login_or_token=token.token)
