@@ -8,6 +8,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Requirements in separate stage
 FROM build as build-env
 
+WORKDIR /
+
 COPY ./requirements.txt ./
 
 ARG PIP_DISABLE_PIP_VERSION_CHECK=1

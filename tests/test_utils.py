@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 import pytest
@@ -52,3 +53,9 @@ def test_get_logger(logger, caplog, msg, level):
     getattr(logger, level[0])(msg)
     number = getattr(logging, level[0].upper())
     assert caplog.record_tuples == [(logger.name, number, msg)]
+
+
+def test_extended_datetime_now(freezer):
+    freezer.move_to('2023-01-15')
+    expected = datetime.datetime(2023, 1, 22)
+    assert utils.extend_datetime_now(weeks=1) == expected

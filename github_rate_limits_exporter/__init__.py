@@ -24,38 +24,18 @@ from prometheus_client import REGISTRY, start_http_server
 from github_rate_limits_exporter.cli import parsecli
 from github_rate_limits_exporter.collector import GithubRateLimitsCollector
 from github_rate_limits_exporter.exceptions import ERROR_STATUS_ON_EXCEPTIONS
-from github_rate_limits_exporter.github import AccessToken, GithubApp
-from github_rate_limits_exporter.utils import (
-    GracefulShutdown,
-    extend_datetime_now,
-    initialize_logger,
-)
+from github_rate_limits_exporter.utils import GracefulShutdown, initialize_logger
 
 logger = logging.getLogger(__name__)
 
 
-def _get_access_token(args: argparse.Namespace) -> AccessToken:
-    if args.github_auth_type == "pat":
-        return AccessToken(args.github_token, extend_datetime_now(weeks=999))
-    token = GithubApp(
-        args.github_app_id,
-        args.github_app_private_key_path,
-        args.github_app_installation_id,
-    ).access_token
-    return AccessToken(token.token, token.expires_at)
-
-
 def main(argv: Optional[List[str]] = None) -> int:
-    """Prometheus exporter main entrypoint"""
+    """Prometheus exporter Main Entrypoint"""
     try:
         args = parsecli(argv=argv, description=__doc__)
         initialize_logger(args.verbosity)
         logger.info('Register collector for "%s" Github account', args.github_account)
-        access_token = _get_access_token(args)
-        logger.debug(access_token)
-        REGISTRY.register(
-            GithubRateLimitsCollector(args.github_account, access_token.token)
-        )
+        REGISTRY.register(GithubRateLimitsCollector(args))
         logger.info(
             "HTTP metrics server started on [%s:%d]", args.bind_addr, args.listen_port
         )

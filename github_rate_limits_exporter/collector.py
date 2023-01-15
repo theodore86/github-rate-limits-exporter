@@ -9,16 +9,17 @@
     when the exporter starts up.
 """
 
+import argparse
 import logging
 from typing import Iterable, Optional
 
 import dotmap
-import github
 from prometheus_client import Metric
 from prometheus_client.core import GaugeMetricFamily
 from prometheus_client.registry import Collector
 
 from github_rate_limits_exporter.constants import DEFAULT_RATE_LIMITS
+from github_rate_limits_exporter.github import GithubRateLimitsRequester
 from github_rate_limits_exporter.utils import get_unix_timestamp
 
 logger = logging.getLogger(__name__)
@@ -28,33 +29,22 @@ class GithubRateLimitsCollector(Collector):
     """
     Prometheus GitHub Rate Limits collector.
 
-    :param str account: Github account name.
-    :param str token: Github APP (installation) or personal token (PAT).
+    :param argparse.Namespace: Argparse object to store the initial collector attributes.
+        Namespace attributes are populated by the command-line interface.
+
+      - account (str): The Github account name.
+      - requester (GithubRateLimitsRequester): Github API Rate-Limits requester.
+
     :raises ValueError: Any of the attributes is not an string type.
     """
 
-    def __init__(self, account: str, token: str) -> None:
-        self.account = account
-        self.token = token
-        self._api = github.Github(login_or_token=self._token)
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self._account!r}, {self._token!r})"
-
-    @property
-    def token(self) -> str:
-        """Github Token"""
-        return self._token
-
-    @token.setter
-    def token(self, value: str) -> None:
-        if not isinstance(value, str):
-            raise ValueError(f"Github token must be a string type: {value!r}")
-        self._token = value
+    def __init__(self, args: argparse.Namespace) -> None:
+        self.account = args.github_account
+        self._requester = GithubRateLimitsRequester(args)
 
     @property
     def account(self) -> str:
-        """Github Account"""
+        """The Github Account"""
         return self._account
 
     @account.setter
@@ -62,12 +52,6 @@ class GithubRateLimitsCollector(Collector):
         if not isinstance(value, str):
             raise ValueError(f"Github account must be a string type: {value!r}")
         self._account = value
-
-    @property
-    def rate_limits(self) -> dotmap.DotMap:
-        """Github API rate-limits"""
-        rate_limits = self._api.get_rate_limit()
-        return dotmap.DotMap(rate_limits.raw_data)
 
     def collect(self) -> Iterable[Metric]:
         """
@@ -77,7 +61,7 @@ class GithubRateLimitsCollector(Collector):
         """
         metrics = []
         logger.debug("Collected metrics for %s account", self._account)
-        rate_limits = self.rate_limits
+        rate_limits = self._requester.get_rate_limits()
         metrics.extend(
             [
                 self._add_metric(resources=rate_limits),
