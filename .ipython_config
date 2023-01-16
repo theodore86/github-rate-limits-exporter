@@ -1,0 +1,37 @@
+
+#Configuration file for Ipython
+c = get_config()
+
+#------------------------------------------------------------------------------
+# TerminalInteractiveShell configuration
+#------------------------------------------------------------------------------
+
+c.TerminalInteractiveShell.colors = 'linux'
+c.TerminalInteractiveShell.editor = 'vim'
+c.TerminalInteractiveShell.highlighting_style = 'monokai'
+c.TerminalInteractiveShell.highlight_matching_brackets = True
+
+#------------------------------------------------------------------------------
+# InteractiveShellApp configuration
+#------------------------------------------------------------------------------
+
+#It will reload all changed modules every time before executing a new line
+c.InteractiveShellApp.extensions = ['autoreload']
+c.InteractiveShellApp.exec_lines = ['%autoreload 2']
+
+#------------------------------------------------------------------------------
+# TerminalIPythonApp configuration
+#------------------------------------------------------------------------------
+
+#Banner
+c.TerminalIPythonApp.display_banner = True
+
+# Set the log level by value or name.
+# ERROR   40
+# WARNING 30
+# INFO 20
+# DEBUG 10
+c.TerminalIPythonApp.log_level = 10
+
+# Whether to overwrite existing config files when copying
+c.TerminalIPythonApp.overwrite = False
