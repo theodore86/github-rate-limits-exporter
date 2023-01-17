@@ -8,9 +8,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Requirements in separate stage
 FROM build as build-env
 
-RUN python3 -m pip install -U setuptools
-
-COPY requirements.txt ./
+COPY ./requirements.txt ./
 
 ARG PIP_DISABLE_PIP_VERSION_CHECK=1
 ARG PIP_NO_COMPILE=1
