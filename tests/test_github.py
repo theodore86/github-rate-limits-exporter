@@ -5,7 +5,12 @@ from datetime import datetime
 import pytest
 
 from github_rate_limits_exporter.github import GithubApp, GithubToken
-from tests.utils import CURRENT_TIME, TOKEN_EXPIRES_AT
+from tests.utils import (
+    CURRENT_TIME,
+    MOVE_FORWARD_CURRENT_TIME,
+    NEW_TOKEN_EXPIRATION_TIME,
+    TOKEN_EXPIRES_AT,
+)
 
 
 @pytest.mark.parametrize(
@@ -162,3 +167,19 @@ def test_github_rate_limits_requester(
     assert github_app_requester.get_rate_limits() == rate_limits_json_dotmap
     assert github_mock.call_count == 1
     assert github_app_access_token_mock.call_count == 1
+
+
+def test_github_rate_limits_request_refresh_token(
+    freezer,
+    github_mock,
+    github_app_access_token_mock,
+    github_app_requester,
+    rate_limits_json_dotmap,
+):
+    freezer.move_to(MOVE_FORWARD_CURRENT_TIME)
+    assert github_app_requester.get_rate_limits() == rate_limits_json_dotmap
+    assert github_app_requester.token == GithubToken(
+        "some-value", NEW_TOKEN_EXPIRATION_TIME
+    )
+    assert github_mock.call_count == 2
+    assert github_app_access_token_mock.call_count == 2

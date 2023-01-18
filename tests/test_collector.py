@@ -7,13 +7,13 @@ from prometheus_client.core import GaugeMetricFamily
 from tests.utils import CURRENT_TIMESTAMP
 
 
-def test_add_metrics(collector, rate_limits_json, mocker):
+def test_add_metrics(
+    github_rate_limits_requester_mock,
+    collector,
+    rate_limits_json,
+    mock_unix_timestamp,
+):
     mock_resources = dotmap.DotMap(rate_limits_json)
-    mock_unix_timestamp = mocker.patch(
-        "github_rate_limits_exporter.collector.get_unix_timestamp",
-        return_value=CURRENT_TIMESTAMP,
-        autospec=True,
-    )
     expected_metric = GaugeMetricFamily(
         "github_rate_limits_search",
         "API requests in search per hour",
@@ -35,15 +35,13 @@ def test_add_metrics(collector, rate_limits_json, mocker):
         api_name="search", resources=mock_resources
     )
     assert mock_unix_timestamp.call_count == 4
+    assert github_rate_limits_requester_mock.call_count == 1
     assert actual_metric == expected_metric
 
 
-def test_collect_metrics(collector, mocker):
-    mock_unix_timestamp = mocker.patch(
-        "github_rate_limits_exporter.collector.get_unix_timestamp",
-        return_value=CURRENT_TIMESTAMP,
-        autospec=True,
-    )
+def test_collect_metrics(
+    github_rate_limits_requester_mock, collector, mock_unix_timestamp
+):
 
     core = GaugeMetricFamily(
         "github_rate_limits_core",
@@ -128,6 +126,7 @@ def test_collect_metrics(collector, mocker):
     ]
 
     assert collector.collect() == expected_metrics
+    assert github_rate_limits_requester_mock.call_count == 1
     assert mock_unix_timestamp.call_count == 20
 
 
@@ -140,6 +139,9 @@ def test_collect_metrics(collector, mocker):
         (dotmap.DotMap(), does_not_raise()),
     ],
 )
-def test_collector_resource_type(collector, resources, expectation):
+def test_collector_resource_type(
+    github_rate_limits_requester_mock, collector, resources, expectation
+):
     with expectation:
         collector._add_metric(api_name="test", resources=resources)
+    assert github_rate_limits_requester_mock.call_count == 1

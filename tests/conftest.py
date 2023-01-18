@@ -12,7 +12,12 @@ from github.InstallationAuthorization import InstallationAuthorization
 from github_rate_limits_exporter import cli, github
 from github_rate_limits_exporter.collector import GithubRateLimitsCollector
 from github_rate_limits_exporter.github import GithubRateLimitsRequester
-from tests.utils import CURRENT_TIME, TOKEN_EXPIRES_AT
+from tests.utils import (
+    CURRENT_TIME,
+    CURRENT_TIMESTAMP,
+    NEW_TOKEN_EXPIRES_AT,
+    TOKEN_EXPIRES_AT,
+)
 
 
 @pytest.fixture(scope="module")
@@ -92,15 +97,29 @@ def mock_github_rate_limits_requester(rate_limits_json):
         def get_rate_limits(self):
             return dotmap.DotMap(rate_limits_json)
 
-    return GithubRateLimitsRequesterMock
+    return GithubRateLimitsRequesterMock(argparse.Namespace())
 
 
 @pytest.fixture
-def collector(mocker, private_key_str, mock_github_rate_limits_requester):
-    mocker.patch(
-        "github_rate_limits_exporter.collector.GithubRateLimitsRequester",
-        mock_github_rate_limits_requester,
+def mock_unix_timestamp(mocker):
+    return mocker.patch(
+        "github_rate_limits_exporter.collector.get_unix_timestamp",
+        return_value=CURRENT_TIMESTAMP,
+        autospec=True,
     )
+
+
+@pytest.fixture
+def github_rate_limits_requester_mock(mocker, mock_github_rate_limits_requester):
+    return mocker.patch(
+        "github_rate_limits_exporter.collector.GithubRateLimitsRequester",
+        return_value=mock_github_rate_limits_requester,
+        autospec=True,
+    )
+
+
+@pytest.fixture
+def collector(private_key_str):
     return GithubRateLimitsCollector(
         argparse.Namespace(
             github_account="github_account",
@@ -135,7 +154,9 @@ def access_token():
 @pytest.fixture
 def github_mock(mocker, mock_github):
     return mocker.patch(
-        "github_rate_limits_exporter.github.Github", return_value=mock_github
+        "github_rate_limits_exporter.github.Github",
+        return_value=mock_github,
+        autospec=True,
     )
 
 
@@ -145,7 +166,10 @@ def github_app_access_token_mock(mocker, install_auth):
         "github_rate_limits_exporter.github.GithubApp.access_token",
         new_callable=PropertyMock,
     )
-    mock_token.side_effect = [install_auth(TOKEN_EXPIRES_AT)]
+    mock_token.side_effect = [
+        install_auth(TOKEN_EXPIRES_AT),
+        install_auth(NEW_TOKEN_EXPIRES_AT),
+    ]
     return mock_token
 
 
