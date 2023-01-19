@@ -50,9 +50,17 @@ jobs:
         run: |
           tox -e build_dist
 
+      - name: "Generate Github App token"
+        uses: "tibdex/github-app-token@v1.7.0"
+        id: "generate-token"
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: "Create PR for release version file"
         uses: "peter-evans/create-pull-request@v4"
         with:
+          token: ${{ steps.generate-token.outputs.token }}
           commit-message: "chore: update package version file to: ${{ github.ref_name }}"
           base: main
           branch: "${{ github.ref_name }}-main-release"
