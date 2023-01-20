@@ -75,7 +75,9 @@ class GithubApp:
     @installation_id.setter
     def installation_id(self, value: int) -> None:
         if not isinstance(value, int):
-            raise ValueError(f"Github App installation id must be a int type: {value!r}")
+            raise ValueError(
+                f"Github App installation id must be a int type: {value!r}"
+            )
         self._installation_id = value
 
     @property
@@ -119,7 +121,9 @@ class GithubToken:
     _token: str = field(init=False)
     _expires_at: datetime.datetime = field(init=False)
 
-    def __post_init__(self, _init_token: str, _init_expires_at: datetime.datetime) -> None:
+    def __post_init__(
+        self, _init_token: str, _init_expires_at: datetime.datetime
+    ) -> None:
         self.token = _init_token
         self.expires_at = _init_expires_at
 
@@ -145,7 +149,9 @@ class GithubToken:
     @expires_at.setter
     def expires_at(self, value: datetime.datetime) -> None:
         if not isinstance(value, datetime.datetime):
-            raise ValueError(f"Token expiration time must be a datetime type: {value!r}")
+            raise ValueError(
+                f"Token expiration time must be a datetime type: {value!r}"
+            )
         self._expires_at = value
 
     def has_expired(self, seconds: int = 300) -> bool:
