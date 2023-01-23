@@ -11,9 +11,9 @@ services:
     image: prom-gh-rl-exporter:latest
     restart: on-failure:5
     expose:
-      - 10050
+      - ${EXPORTER_LISTEN_PORT:-10050}
     ports:
-      - "10050:10050"
+      - "${EXPORTER_LISTEN_PORT:-10050}:${EXPORTER_LISTEN_PORT:-10050}"
     environment:
       GITHUB_AUTH_TYPE: null
       GITHUB_ACCOUNT: null
@@ -22,7 +22,8 @@ services:
       GITHUB_APP_INSTALLATION_ID: null
       GITHUB_APP_PRIVATE_KEY_PATH: ${GITHUB_APP_PRIVATE_KEY_PATH:-/tmp/private-key.pem}
       GITHUB_APP_SRC_PRIVATE_KEY_PATH: ${GITHUB_APP_SRC_PRIVATE_KEY_PATH:-/dev/null}
-      GITHUB_LOG_LEVEL: null
+      EXPORTER_LOG_LEVEL: ${EXPORTER_LOG_LEVEL:-4}
+      EXPORTER_LISTEN_PORT: ${EXPORTER_LISTEN_PORT:-10050}
     volumes:
       - ${GITHUB_APP_SRC_PRIVATE_KEY_PATH:-/dev/null}:${GITHUB_APP_PRIVATE_KEY_PATH:-/tmp/private-key.pem}:ro
     networks:

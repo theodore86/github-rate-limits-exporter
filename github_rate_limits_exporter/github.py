@@ -181,6 +181,7 @@ class GithubRateLimitsRequester:
         self._api = Github(login_or_token=self.token.token)
 
     def _initialize_token(self, args: argparse.Namespace) -> GithubToken:
+        logger.debug("Github authentication type: %s", args.github_auth_type)
         if args.github_auth_type == "pat":
             return GithubToken(args.github_token, extend_datetime_now(weeks=999))
         self._app = GithubApp(args)

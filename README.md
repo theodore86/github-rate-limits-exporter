@@ -91,7 +91,7 @@ docker run -p 10050:10050 -d \
   -e GITHUB_ACCOUNT=my_account_name \
   -e GITHUB_AUTH_TYPE=pat \
   -e GITHUB_TOKEN=my_token \
-  -e GITHUB_LOG_LEVEL=4 \
+  -e EXPORTER_LOG_LEVEL=4 \
   prometheus-gh-rate-limit-exporter:latest
 ```
 
@@ -106,7 +106,7 @@ docker run -p 10050:10050 -d \
   -e GITHUB_APP_ID=111111 \
   -e GITHUB_APP_INSTALLATION_ID=22222222 \
   -e GITHUB_APP_PRIVATE_KEY_PATH=/app/key.pem \
-  -e GITHUB_LOG_LEVEL=4 \
+  -e EXPORTER_LOG_LEVEL=4 \
   --mount type=bind,source=/ws/key.pem,target=/app/key.pem,readonly \
   prometheus-gh-rate-limit-exporter:latest
 ```
@@ -128,7 +128,7 @@ pip install --user tox
 export GITHUB_AUTH_TYPE=pat
 export GITHUB_TOKEN=your_token
 export GITHUB_ACCOUNT=your_account
-export GITHUB_LOG_LEVEL=4
+export EXPORTER_LOG_LEVEL=4
 export GF_SECURITY_ADMIN_USER=username
 export GF_SECURITY_PASSWORD=password
 tox -e dc-run
@@ -142,7 +142,7 @@ export GITHUB_APP_ID=12345
 export GITHUB_APP_INSTALLATION_ID=123456
 export GITHUB_APP_SRC_PRIVATE_KEY_PATH=/ws/private_key.pem
 export GITHUB_APP_PRIVATE_KEY_PATH=/tmp/private_key.pem
-export GITHUB_LOG_LEVEL=4
+export EXPORTER_LOG_LEVEL=4
 export GF_SECURITY_ADMIN_USER=username
 export GF_SECURITY_PASSWORD=password
 tox -e dc-run

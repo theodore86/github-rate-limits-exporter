@@ -15,7 +15,7 @@ import sys
 from types import FrameType
 from typing import Optional
 
-from github_rate_limits_exporter.constants import DEFAULT_LOG_FMT
+from github_rate_limits_exporter.constants import DEFAULT_LOG_FMT, LOGGING_LEVELS
 
 
 def get_unix_timestamp() -> float:
@@ -52,24 +52,18 @@ def base64_decode(string: str) -> str:
     return string
 
 
-def initialize_logger(level: int) -> None:
+def initialize_logger(level: int, fmt: Optional[str] = DEFAULT_LOG_FMT) -> None:
     """
     Initialize and setup the level of effectiveness.
 
     :param int level: Verbosity level (0...4)
+    :param str fmt: Custom formatter.
     :returns: Nothing.
     """
-    levels = {
-        0: logging.CRITICAL,
-        1: logging.ERROR,
-        2: logging.WARNING,
-        3: logging.INFO,
-        4: logging.DEBUG,
-    }
     console = logging.StreamHandler(sys.stdout)
-    template = logging.Formatter(DEFAULT_LOG_FMT)
+    template = logging.Formatter(fmt)
     console.setFormatter(template)
-    verbosity_level = levels.get(int(level), logging.DEBUG)
+    verbosity_level = LOGGING_LEVELS.get(int(level), logging.DEBUG)
     logger = logging.getLogger()
     logger.addHandler(console)
     logger.setLevel(verbosity_level)
