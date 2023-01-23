@@ -76,14 +76,14 @@ def parsecli(
     parser.add_argument(
         "--bind-address",
         dest="bind_addr",
-        default="0.0.0.0",
+        default=os.getenv("EXPORTER_BIND_ADDRESS", default="0.0.0.0"),
         type=ip_address,
-        help="exporter HTTP bind address, (default: 0.0.0.0)",
+        help="exporter HTTP bind address, (default: %(default)s)",
     )
     parser.add_argument(
         "--listen-port",
         dest="listen_port",
-        default=10050,
+        default=os.getenv("EXPORTER_LISTEN_PORT") or 10050,
         type=listen_port,
         help="exporter HTTP listen port, (default: %(default)s)",
     )
@@ -93,9 +93,9 @@ def parsecli(
     parser.add_argument(
         "-v",
         dest="verbosity",
-        default=os.getenv("GITHUB_LOG_LEVEL") or 3,
+        default=os.getenv("EXPORTER_LOG_LEVEL") or 0,
         action="count",
-        help="logging verbosity (up to 5 times),default level: INFO",
+        help="logging verbosity (up to 5 times),default: CRITICAL",
     )
     args, __ = parser.parse_known_args(args=argv)
     _check_mutual_inclusive_arguments(args, parser)

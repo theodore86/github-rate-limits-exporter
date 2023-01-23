@@ -60,7 +60,7 @@ class GithubRateLimitsCollector(Collector):
         :return list: List of metrics.
         """
         metrics = []
-        logger.debug("Collected metrics for %s account", self._account)
+        logger.info("Collected metrics for %s account", self._account)
         rate_limits = self._requester.get_rate_limits()
         metrics.extend(
             [
