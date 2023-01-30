@@ -11,7 +11,7 @@
 
 import argparse
 import logging
-from typing import Iterable, Optional
+from typing import Dict, Iterable, Optional
 
 import dotmap
 from prometheus_client import Metric
@@ -20,7 +20,7 @@ from prometheus_client.registry import Collector
 
 from github_rate_limits_exporter.constants import DEFAULT_RATE_LIMITS
 from github_rate_limits_exporter.github import GithubRateLimitsRequester
-from github_rate_limits_exporter.utils import get_unix_timestamp
+from github_rate_limits_exporter.utils import SharedExceptionQueue, get_unix_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -34,13 +34,17 @@ class GithubRateLimitsCollector(Collector):
 
       - account (str): The Github account name.
       - requester (GithubRateLimitsRequester): Github API Rate-Limits requester.
+      - exception_queue: Queue with exception objects.
 
     :raises ValueError: Any of the attributes is not an string type.
     """
 
-    def __init__(self, args: argparse.Namespace) -> None:
+    def __init__(
+        self, args: argparse.Namespace, exception_queue: SharedExceptionQueue
+    ) -> None:
         self.account = args.github_account
         self._requester = GithubRateLimitsRequester(args)
+        self._exception_queue = exception_queue
 
     @property
     def account(self) -> str:
@@ -53,6 +57,9 @@ class GithubRateLimitsCollector(Collector):
             raise ValueError(f"Github account must be a string type: {value!r}")
         self._account = value
 
+    def _get_rate_limits(self) -> Dict[str, str]:
+        return self._requester.get_rate_limits()
+
     def collect(self) -> Iterable[Metric]:
         """
         Returns the requested Github (per API) rate-limit metrics.
@@ -61,18 +68,15 @@ class GithubRateLimitsCollector(Collector):
         """
         metrics = []
         logger.info("Collected metrics for %s account", self._account)
-        rate_limits = self._requester.get_rate_limits()
+        decorated = self._exception_queue.put(self._requester.get_rate_limits)
+        limits = decorated()
         metrics.extend(
             [
-                self._add_metric(resources=rate_limits),
-                self._add_metric(api_name="search", resources=rate_limits),
-                self._add_metric(api_name="graphql", resources=rate_limits),
-                self._add_metric(
-                    api_name="integration_manifest", resources=rate_limits
-                ),
-                self._add_metric(
-                    api_name="code_scanning_upload", resources=rate_limits
-                ),
+                self._add_metric(resources=limits),
+                self._add_metric(api_name="search", resources=limits),
+                self._add_metric(api_name="graphql", resources=limits),
+                self._add_metric(api_name="integration_manifest", resources=limits),
+                self._add_metric(api_name="code_scanning_upload", resources=limits),
             ]
         )
         logger.debug("%s", metrics)

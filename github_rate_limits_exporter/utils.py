@@ -9,11 +9,12 @@ import base64
 import binascii
 import datetime
 import logging
+import queue
 import signal
 import socket
 import sys
 from types import FrameType
-from typing import Optional
+from typing import Any, Callable, Optional
 
 from github_rate_limits_exporter.constants import DEFAULT_LOG_FMT, LOGGING_LEVELS
 
@@ -130,3 +131,34 @@ def extend_datetime_now(weeks: int = 1) -> datetime.datetime:
     """
     now = datetime.datetime.utcnow()
     return now + datetime.timedelta(weeks=weeks)
+
+
+class SharedExceptionQueue:
+    """Queue for transfering exceptions between threads"""
+
+    def __init__(self, equeue: queue.Queue) -> None:
+        self.equeue = equeue
+
+    def put(self, func: Callable[..., Any]) -> Callable[..., Any]:
+        """Put error (exception) of any callable into the queue"""
+
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            try:
+                return func(*args, **kwargs)
+            except Exception as error:  # pylint: disable=broad-except
+                self.equeue.put(error, block=False)
+            return None
+
+        return wrapper
+
+    def get(self, *args: Any, **kwargs: Any) -> Exception:
+        """Remove error (exception) from the queue"""
+        return self.equeue.get(*args, **kwargs)
+
+    def get_error(self, *args: Any, **kwargs: Any) -> None:
+        """Remove and raise error (exception) (if available) from the queue."""
+        try:
+            exc = self.get(*args, **kwargs)
+            raise exc
+        except queue.Empty:
+            pass

@@ -3,6 +3,7 @@ import base64
 import datetime
 import json
 import os
+import queue
 from unittest.mock import PropertyMock
 
 import dotmap
@@ -12,6 +13,7 @@ from github.InstallationAuthorization import InstallationAuthorization
 from github_rate_limits_exporter import cli, github
 from github_rate_limits_exporter.collector import GithubRateLimitsCollector
 from github_rate_limits_exporter.github import GithubRateLimitsRequester
+from github_rate_limits_exporter.utils import SharedExceptionQueue
 from tests.utils import (
     CURRENT_TIME,
     CURRENT_TIMESTAMP,
@@ -119,14 +121,25 @@ def github_rate_limits_requester_mock(mocker, mock_github_rate_limits_requester)
 
 
 @pytest.fixture
-def collector(private_key_str):
+def exception_queue():
+    return SharedExceptionQueue(queue.Queue())
+
+
+@pytest.fixture
+def exception_queue_put_error(exception_queue):
+    return exception_queue.put(lambda: exec('raise(ValueError("invalid value"))'))
+
+
+@pytest.fixture
+def collector(private_key_str, exception_queue):
     return GithubRateLimitsCollector(
         argparse.Namespace(
             github_account="github_account",
             github_app_id=11112222,
             github_app_installation_id=12345678,
             github_app_private_key_path=private_key_str,
-        )
+        ),
+        exception_queue,
     )
 
 
@@ -146,9 +159,7 @@ def github_env_vars(request):
 
 @pytest.fixture(scope="module")
 def access_token():
-    return github.GithubToken(
-        "some-value", datetime.datetime(2022, 12, 24, 9, 25, 38)
-    )
+    return github.GithubToken("some-value", datetime.datetime(2022, 12, 24, 9, 25, 38))
 
 
 @pytest.fixture
