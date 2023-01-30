@@ -89,3 +89,15 @@ def test_extended_datetime_now(freezer):
     freezer.move_to("2023-01-15")
     expected = datetime.datetime(2023, 1, 22)
     assert extend_datetime_now(weeks=1) == expected
+
+
+def test_shared_exception_queue_put(exception_queue, exception_queue_put_error):
+    value = exception_queue_put_error()
+    assert value is None
+    assert str(exception_queue.get(block=False)) == "invalid value"
+
+
+def test_shared_exception_queue_get_error(exception_queue, exception_queue_put_error):
+    exception_queue_put_error()
+    with pytest.raises(ValueError):
+        exception_queue.get_error()
