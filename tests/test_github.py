@@ -124,11 +124,24 @@ def test_github_app_installation_id(args, expectation, request):
 @pytest.mark.parametrize(
     "token, expires_at, expectation",
     [
-        ("value", CURRENT_TIME, does_not_raise()),
-        ("another_value", "date", pytest.raises(ValueError)),
+        ("dfgftgh4FSE#", CURRENT_TIME, does_not_raise()),
+        ("token", "date", pytest.raises(ValueError)),
     ],
 )
-def test_access_token(token, expires_at, expectation):
+def test_github_token_expires_at(token, expires_at, expectation):
+    with expectation:
+        GithubToken(token, expires_at)
+
+
+@pytest.mark.parametrize(
+    "token, expires_at, expectation",
+    [
+        ("#Er%45612", CURRENT_TIME, does_not_raise()),
+        (123456, CURRENT_TIME, pytest.raises(ValueError)),
+        ([], CURRENT_TIME, pytest.raises(ValueError)),
+    ],
+)
+def test_github_token_value(token, expires_at, expectation):
     with expectation:
         GithubToken(token, expires_at)
 
@@ -137,7 +150,7 @@ def test_access_token(token, expires_at, expectation):
     "date, expectation",
     [("2022-12-25 10:25:38", True), ("2022-12-23 12:30:45", False)],
 )
-def test_access_token_has_expired(access_token, freezer, date, expectation):
+def test_github_token_has_expired(access_token, freezer, date, expectation):
     freezer.move_to(date)
     assert access_token.has_expired() == expectation
 
@@ -178,8 +191,6 @@ def test_github_rate_limits_request_refresh_token(
 ):
     freezer.move_to(MOVE_FORWARD_CURRENT_TIME)
     assert github_app_requester.get_rate_limits() == rate_limits_json_dotmap
-    assert github_app_requester.token == GithubToken(
-        "some-value", NEW_TOKEN_EXPIRATION_TIME
-    )
+    assert github_app_requester.token == GithubToken("some-value", NEW_TOKEN_EXPIRATION_TIME)
     assert github_mock.call_count == 2
     assert github_app_access_token_mock.call_count == 2
