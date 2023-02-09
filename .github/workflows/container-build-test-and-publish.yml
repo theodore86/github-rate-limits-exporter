@@ -1,5 +1,5 @@
 ---
-name: Docker build,test and publish.
+name: Docker build,test and publish
 on:
   push:
     tags:
@@ -22,10 +22,11 @@ env:
   DOCKER_GITHUB_RL_INTERVAL: "5s"
 
 jobs:
-  linting_and_testing:
-    uses: ./.github/workflows/linting-and-testing.yml
+  app_linting_and_testing:
+    uses: ./.github/workflows/app-linting-and-testing.yml
+
   build_test_and_publish_docker_image:
-    needs: ["linting_and_testing"]
+    needs: ["app_linting_and_testing"]
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout SCM"

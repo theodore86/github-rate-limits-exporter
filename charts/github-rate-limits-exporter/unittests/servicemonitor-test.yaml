@@ -1,0 +1,82 @@
+suite: test servicemonitor
+release:
+  name: my-release
+  namespace: exporters
+templates:
+  - servicemonitor.yaml
+tests:
+  - it: disabled
+    set:
+      serviceMonitor:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: enabled (defaults)
+    set:
+      serviceMonitor:
+        enabled: true
+    asserts:
+      - isKind:
+          of: ServiceMonitor
+      - equal:
+          path: apiVersion
+          value: monitoring.coreos.com/v1
+      - equal:
+          path: metadata.name
+          value: my-release-github-rate-limits-exporter
+      - equal:
+          path: metadata.labels.app\.kubernetes\.io/name
+          value: my-release-github-rate-limits-exporter
+      - matchRegex:
+          path: metadata.labels.helm\.sh/chart
+          pattern: github-rate-limits-exporter-\d+\.\d+\.\d+
+      - equal:
+          path: metadata.labels.app\.kubernetes\.io/instance
+          value: my-release
+      - equal:
+          path: metadata.labels.app\.kubernetes\.io/managed-by
+          value: Helm
+      - matchRegex:
+          path: metadata.labels.app\.kubernetes\.io/version
+          pattern: ^\d+\.\d+\.\d+
+      - isNull:
+          path: metadata.annotations
+      - equal:
+          path: spec
+          value:
+            namespaceSelector:
+              matchNames:
+                - exporters
+            endpoints:
+              - interval: 30s
+                port: metrics
+                path: "/metrics"
+            jobLabel: my-release-github-rate-limits-exporter
+            selector:
+              matchLabels:
+                app.kubernetes.io/name: my-release-github-rate-limits-exporter
+                app.kubernetes.io/instance: my-release
+  - it: enabled, test endpoint interval, annotations
+    set:
+      serviceMonitor:
+        enabled: true
+        interval: "15s"
+        targetPort: "80"
+        path: "/"
+        annotations:
+          key: value
+    asserts:
+      - equal:
+          path: spec.endpoints[0].interval
+          value: "15s"
+      - equal:
+          path: spec.endpoints[0].path
+          value: "/"
+      - equal:
+          path: spec.endpoints[0].targetPort
+          value: 80
+      - equal:
+          path: metadata.annotations
+          value:
+            key: value

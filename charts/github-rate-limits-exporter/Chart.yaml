@@ -1,0 +1,16 @@
+apiVersion: v2
+name: github-rate-limits-exporter
+description: A Helm chart for github-rate-limits prometheus exporter
+home: https://github.com/theodore86/github-rate-limits-exporter
+keywords:
+  - prometheus
+  - exporter
+  - github
+  - rate-limits
+maintainers:
+  - name: theodore86
+    email: tgeorgomanolis@gmail.com
+
+type: application
+# 1-1 as application source code
+version: 0.7.1

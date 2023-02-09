@@ -1,0 +1,82 @@
+---
+helmDefaults:
+  createNamespace: true
+  wait: true
+  timeout: 300
+  atomic: true
+
+repositories:
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+
+releases:
+  - name: kube-prometheus-stack
+    namespace: monitoring
+    chart: "prometheus-community/kube-prometheus-stack"
+    version: "45.7.1"
+    values:
+      - defaultRules:
+          create: false
+        nodeExporter:
+          enabled: false
+        coreDns:
+          enabled: false
+        kubeDns:
+          enabled: false
+        kubeProxy:
+          enabled: false
+        kubeEtcd:
+          enabled: false
+        kubeControllerManager:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+        kubelet:
+          enabled: false
+        kubeApiServer:
+          enabled: false
+        prometheus:
+          service:
+            type: NodePort
+            nodePort: 30000
+          prometheusSpec:
+            serviceMonitorSelector:
+              app: "github-rate-limits-exporter"
+        grafana:
+          service:
+            type: NodePort
+            nodePort: 31000
+          sidecar:
+            datasources:
+              uid: PBFA97CFB590B2093
+        alertmanager:
+          service:
+            type: NodePort
+            nodePort: 32000
+  - name: gh-rl-exporter
+    namespace: monitoring
+    chart: ../charts/github-rate-limits-exporter
+    values:
+      - serviceMonitor:
+          enabled: true
+        service:
+          labels:
+            app: "github-rate-limits-exporter"
+        exporter:
+          image: "theodore86/prometheus-gh-rate-limit-exporter"
+          tag: "v0.7.1"
+    set:
+      - name: exporter.github.accountName
+        value: {{ requiredEnv "GITHUB_ACCOUNT" }}
+      - name: exporter.github.authType
+        value: {{ requiredEnv "GITHUB_AUTH_TYPE" }}
+      - name: exporter.github.appID
+        value: {{ requiredEnv "GITHUB_APP_ID" }}
+      - name: exporter.github.installationID
+        value: {{ requiredEnv "GITHUB_APP_INSTALLATION_ID" }}
+      - name: exporter.github.mountPath
+        value: {{ env "GITHUB_APP_SECRET_MOUNT_PATH" | default "/secret" }}
+      - name: exporter.github.privateKey
+        file: {{ requiredEnv "GITHUB_APP_SRC_PRIVATE_KEY_PATH" }}
+      - name: exporter.github.logLevel
+        value: {{ env "EXPORTER_LOG_LEVEL" | default 4 | int }}
