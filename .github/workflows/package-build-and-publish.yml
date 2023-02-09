@@ -1,5 +1,5 @@
 ---
-name: Package and Distribute to Pypi
+name: Package application and Distribute to PYPI server.
 on:
   push:
     tags:
@@ -11,11 +11,11 @@ env:
   TOX_VERSION: "3.27.1"
 
 jobs:
-  linting_and_testing:
-    uses: ./.github/workflows/linting-and-testing.yml
+  app_linting_and_testing:
+    uses: ./.github/workflows/app-linting-and-testing.yml
 
   build_and_publish_distribution:
-    needs: ["linting_and_testing"]
+    needs: ["app_linting_and_testing"]
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout SCM"

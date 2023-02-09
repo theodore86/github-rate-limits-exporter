@@ -1,5 +1,5 @@
 ---
-name: Linting And Testing
+name: App Linting And Testing
 
 on:
   workflow_call:

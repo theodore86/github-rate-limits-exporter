@@ -4,6 +4,7 @@
 [![CI](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-test-and-publish.yml/badge.svg)](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-test-and-publish.yml)
 [![PyPI version](https://badge.fury.io/py/github-rate-limits-exporter.svg)](https://badge.fury.io/py/github-rate-limits-exporter)
 [![Python version](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)
+![license](https://img.shields.io/github/license/theodore86/github-rate-limits-exporter)
 
 Prometheus exporter to monitor the Github API rate-limits.
 
@@ -137,6 +138,7 @@ tox -e dc-run
 ### Run as APP (Github App) authentication type
 
 ```bash
+export GITHUB_ACCOUNT=your_account
 export GITHUB_AUTH_TYPE=app
 export GITHUB_APP_ID=12345
 export GITHUB_APP_INSTALLATION_ID=123456
@@ -148,7 +150,7 @@ export GF_SECURITY_PASSWORD=password
 tox -e dc-run
 ```
 
-### Connect to Prometheus, Grafana and AlertManager:
+### Connect to Prometheus, Grafana and AlertManager
 
 - [Prometheus](http://localhost:9090)
 - [Grafana](http://localhost:3000)
@@ -163,6 +165,39 @@ See also the existing examples:
 
 ```bash
 tox -e dc-clean
+```
+
+## Kubernetes - Helm chart
+
+[This helm chart helps to install and configure github-rate-limits exporter](charts/github-rate-limits-exporter/README.md) on Kubernetes clusters.
+
+### In order to try out (locally) the charts:
+
+- Install the [KIND binary](https://github.com/kubernetes-sigs/kind/releases)
+
+- Create the KIND cluster:
+
+```bash
+kind create cluster --name monitor --config kubernetes/kind.yml
+```
+
+- Install the [helmfile binary](https://github.com/helmfile/helmfile/releases)
+
+- Bring up the *github-rate-limits exporter* and the Kubernetes Prometheus stack:
+
+```bash
+export GITHUB_ACCOUNT=your_account
+export GITHUB_AUTH_TYPE=app
+export GITHUB_APP_ID=12345
+export GITHUB_APP_INSTALLATION_ID=123456
+export GITHUB_APP_SRC_PRIVATE_KEY_PATH=/ws/private_key.pem
+helmfile -f kubernetes/helmfile.yml sync
+```
+
+### Cleanup/teardown the workloads
+
+```bash
+helmfile -f kubernetes/helmfile.yml destroy
 ```
 
 ## Other Projects

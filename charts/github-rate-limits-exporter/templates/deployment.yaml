@@ -1,0 +1,106 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "github-rate-limits-exporter.fullname" . }}
+  labels:
+    {{- include "github-rate-limits-exporter.labels" . | nindent 4 }}
+    {{- if .Values.podLabels }}
+    {{- toYaml .Values.podLabels | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "github-rate-limits-exporter.selectorLabels" . | nindent 8 }}
+  template:
+    metadata:
+      labels:
+        {{- include "github-rate-limits-exporter.labels" . | nindent 8 }}
+        {{- if .Values.podLabels }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{ if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      serviceAccountName: {{ template "github-rate-limits-exporter.fullname" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ printf "%s:%s" .Values.exporter.image .Values.exporter.tag | quote }}
+          imagePullPolicy: {{ .Values.exporter.pullPolicy | default "Always" }}
+          env:
+          {{- if eq (lower (.Values.exporter.github.authType | default "")) "app" }}
+            - name: GITHUB_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  key: accountName
+            - name: GITHUB_AUTH_TYPE
+              value: {{ .Values.exporter.github.authType | lower | quote }}
+            - name: EXPORTER_LOG_LEVEL
+              value: {{ .Values.exporter.github.logLevel | default 4  | quote }}
+            - name: GITHUB_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  key: appID
+            - name: GITHUB_APP_INSTALLATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  key: installationID
+            - name: GITHUB_APP_PRIVATE_KEY_PATH
+              value: {{ printf "%s/privateKey" .Values.exporter.github.mountPath }}
+          volumeMounts:
+            - name: app-private-key
+              readOnly: true
+              mountPath: {{ .Values.exporter.github.mountPath | quote }}
+          {{- else if eq (lower (.Values.exporter.github.authType | default "")) "pat" }}
+            - name: GITHUB_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  key: accountName
+            - name: GITHUB_AUTH_TYPE
+              value: {{ .Values.exporter.github.authType | lower | quote }}
+            - name: EXPORTER_LOG_LEVEL
+              value: {{ .Values.exporter.github.logLevel | default 4  | quote }}
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  key: token
+          {{- end }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.exporter.port | int }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- if eq (lower (.Values.exporter.github.authType | default "")) "app" }}
+      volumes:
+        - name: app-private-key
+          secret:
+            secretName: {{ template "github-rate-limits-exporter.fullname" . }}
+      {{- end }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+...

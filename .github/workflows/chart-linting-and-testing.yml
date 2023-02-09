@@ -1,0 +1,100 @@
+name: Helm Chart Linting And Testing
+
+on:
+  workflow_call:
+  pull_request:
+  push:
+    branches:
+      - "main"
+
+env:
+  PYTHON_VERSION: "3.11"
+  HELM_VERSION: "v3.11.1"
+  HELM_UNITTESTS_VERSION: "0.2.11"
+  KIND_VERSION: "v0.17.0"
+  KUBECTL_VERSION: "v1.25.0"
+  KUBERNETES_VERSION: "1.25.3"
+
+jobs:
+  chart_linting_and_testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout source code"
+        uses: "actions/checkout@v3.3.0"
+        with:
+          fetch-depth: 0
+
+      - name: "Set up Helm"
+        uses: "azure/setup-helm@v3"
+        with:
+          version: "${{ env.HELM_VERSION }}"
+
+      - name: "Set up Python"
+        uses: "actions/setup-python@v4.5.0"
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
+
+      - name: "Setup chart-testing (lint)"
+        uses: "helm/chart-testing-action@v2.3.1"
+
+      - name: "Run chart-testing (list-changed)"
+        id: list-changed
+        run: |
+          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
+
+      - name: "Install Helm Unittests plugin"
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          helm env
+          helm plugin install https://github.com/quintush/helm-unittest \
+            --version ${{ env.HELM_UNITTESTS_VERSION }}
+
+      - name: "Run chart-testing (lint)"
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          ct lint --debug --config .chart-testing.yaml \
+            --target-branch ${{ github.event.repository.default_branch }}
+
+      - name: "Generate and validate manifests"
+        if: steps.list-changed.outputs.changed == 'true'
+        uses: "shivjm/helm-kubeconform-action@v0.2.0"
+        with:
+          chartsDirectory: "charts"
+          kubernetesVersion: "${{ env.KUBERNETES_VERSION }}"
+
+      - name: "Run Helm unittests"
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          helm unittest --helm3 --strict -f 'unittests/*.yaml' \
+            charts/github-rate-limits-exporter
+
+      - name: "Create KIND cluster"
+        if: github.ref_type == 'tag'
+        uses: "helm/kind-action@v1.5.0"
+        with:
+          version: "${{ env.KIND_VERSION }}"
+          node_image: "kindest/node:v${{ env.KUBERNETES_VERSION }}"
+          kubectl_version: "${{ env.KUBECTL_VERSION }}"
+
+      - name: "Create exporter application private key"
+        if: github.ref_type == 'tag'
+        uses: "DamianReeves/write-file-action@v1.2"
+        with:
+          path: "${{ github.workspace }}/private_key.pem"
+          write-mode: "overwrite"
+          contents: "${{ secrets.APP_PRIVATE_KEY }}"
+
+      - name: Run chart-testing (install)
+        if: github.ref_type == 'tag'
+        run: |
+          ct install --all --config .chart-testing.yaml \
+          --helm-extra-set-args "--set=exporter.tag=${{ github.ref_name }}\
+            --set=exporter.github.accountName=${{ github.event.repository.name }}\
+            --set=exporter.github.token=${{ secrets.GITHUB_TOKEN }}\
+            --set=exporter.github.logLevel=4\
+            --set=exporter.github.appID=${{ secrets.APP_ID }}\
+            --set=exporter.github.installationID=${{ secrets.APP_INSTALLATION_ID }}\
+            --set-file=exporter.github.privateKey=${{ github.workspace }}/private_key.pem"

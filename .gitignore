@@ -139,3 +139,6 @@ allure/
 
 # vscode
 .vscode/
+
+# charts
+*.tgz

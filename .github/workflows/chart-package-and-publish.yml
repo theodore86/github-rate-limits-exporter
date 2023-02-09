@@ -1,0 +1,105 @@
+---
+name: Package and Publish charts.
+on:
+  workflow_run:
+    workflows: ["Docker build,test and publish"]
+    types:
+      - "completed"
+    branches:
+      - "main"
+
+env:
+  DOCKERHUB_CHART_REPO: "registry-1.docker.io"
+  CHART_NAME: "github-rate-limits-exporter"
+  HELM_VERSION: "v3.11.1"
+  YQ_VERSION: "v4.28.1"
+
+jobs:
+  chart_linting_and_testing:
+    uses: ./.github/workflows/chart-linting-and-testing.yml
+
+  chart_packaging_and_publishing:
+    needs: ["chart_linting_and_testing"]
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: "Checkout SCM"
+        uses: "actions/checkout@v3.3.0"
+
+      - name: "Set up Helm"
+        uses: "azure/setup-helm@v3"
+        with:
+          version: "${{ env.HELM_VERSION }}"
+
+      - name: "Login to Helm registry"
+        run: |
+          helm registry login ${{ env.DOCKERHUB_CHART_REPO }} \
+            --username ${{ secrets.DOCKERHUB_USERNAME }} \
+            --password ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: "Set requested Helm package version"
+        id: "package_version"
+        run: |
+          version=$(echo ${{ github.ref_name }} | cut -c 2-)
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+
+      - name: "Package Helm charts"
+        run: |
+          helm package charts/${{ env.CHART_NAME }} \
+            --version ${{ steps.package_version.outputs.VERSION }}
+
+      - name: "Publish Helm charts"
+        run: |
+          helm push ${{ env.CHART_NAME }}-${{ steps.package_version.outputs.VERSION }}.tgz \
+            oci://${{ env.DOCKERHUB_CHART_REPO }}/${{ github.repository_owner }}
+
+      - name: "Setup yq processor"
+        uses: "chrisdickinson/setup-yq@v1.0.1"
+        with:
+          yq-version: "${{ env.YQ_VERSION }}"
+
+      - name: "Update Helm charts with the latest app version"
+        run: |
+          yq '.version = "${{ steps.package_version.outputs.VERSION }}"' -i charts/${{ env.CHART_NAME }}/Chart.yaml
+          yq '.exporter.tag = "${{ github.ref_name }}"' -i charts/${{ env.CHART_NAME }}/values.yaml
+
+      - name: "Generate Github App token"
+        uses: "tibdex/github-app-token@v1.8.0"
+        id: "generate-token"
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: "Create PR for release version file"
+        uses: "peter-evans/create-pull-request@v4.2.3"
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          commit-message: "chore: bump helm charts to version: ${{ steps.package_version.outputs.VERSION }}"
+          base: main
+          branch: "${{ github.ref_name }}-main-release"
+          labels: |
+            helm
+            release
+            github_action
+          add-paths: |
+            charts/${{ env.CHART_NAME }}/values.yaml
+            charts/${{ env.CHART_NAME}}/Chart.yaml
+
+  chart_pulling:
+    needs: ["chart_packaging_and_publishing"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Set up Helm"
+        uses: "azure/setup-helm@v3"
+        with:
+          version: "${{ env.HELM_VERSION }}"
+
+      - name: "Waiting for OCI registry to update the indexes"
+        uses: "juliangruber/sleep-action@v2.0.0"
+        with:
+          time: 30s
+
+      - name: "Pull Helm charts from OCI registry"
+        run: |
+          helm pull oci://${{ env.DOCKERHUB_CHART_REPO }}/${{ github.repository_owner }}/${{ env.CHART_NAME }} \
+            --version ${{ steps.package_version.outputs.VERSION }}

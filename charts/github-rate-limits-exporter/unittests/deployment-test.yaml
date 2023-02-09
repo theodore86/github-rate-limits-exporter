@@ -1,0 +1,285 @@
+suite: test deployment
+release:
+  name: my-release
+templates:
+  - deployment.yaml
+tests:
+  - it: tests defaults
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: apiVersion
+          value: apps/v1
+      - equal:
+          path: metadata.name
+          value: my-release-github-rate-limits-exporter
+      - equal:
+          path: metadata.labels.app\.kubernetes\.io/name
+          value: my-release-github-rate-limits-exporter
+      - matchRegex:
+          path: metadata.labels.helm\.sh/chart
+          pattern: github-rate-limits-exporter-\d+\.\d+\.\d+
+      - equal:
+          path: metadata.labels.app\.kubernetes\.io/instance
+          value: my-release
+      - equal:
+          path: metadata.labels.app\.kubernetes\.io/managed-by
+          value: Helm
+      - matchRegex:
+          path: metadata.labels.app\.kubernetes\.io/version
+          pattern: \d+\.\d+\.\d+
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.selector
+          value:
+            matchLabels:
+              app.kubernetes.io/name: my-release-github-rate-limits-exporter
+              app.kubernetes.io/instance: my-release
+      - equal:
+          path: spec.template.metadata.annotations
+          value: {}
+      - equal:
+          path: spec.template.metadata.labels.app\.kubernetes\.io/managed-by
+          value: Helm
+      - matchRegex:
+          path: spec.template.metadata.labels.app\.kubernetes\.io/version
+          pattern: \d+\.\d+\.\d+
+      - equal:
+          path: spec.template.metadata.labels.app\.kubernetes\.io/name
+          value: my-release-github-rate-limits-exporter
+      - matchRegex:
+          path: spec.template.metadata.labels.helm\.sh/chart
+          pattern: github-rate-limits-exporter-\d+\.\d+\.\d+
+      - equal:
+          path: spec.template.metadata.labels.app\.kubernetes\.io/instance
+          value: my-release
+      - equal:
+          path: spec.template.spec
+          value:
+            affinity: {}
+            containers:
+              - env: null
+                image: theodore86/prometheus-gh-rate-limit-exporter:latest
+                imagePullPolicy: IfNotPresent
+                name: github-rate-limits-exporter
+                ports:
+                  - containerPort: 10050
+                    name: metrics
+                    protocol: TCP
+                readinessProbe:
+                  httpGet:
+                    path: /metrics
+                    port: metrics
+                resources:
+                  limits:
+                    cpu: 100m
+                    memory: 512Mi
+                  requests:
+                    memory: 512Mi
+                securityContext: {}
+            imagePullSecrets: []
+            nodeSelector: {}
+            securityContext: {}
+            serviceAccountName: my-release-github-rate-limits-exporter
+            terminationGracePeriodSeconds: 30
+            tolerations: []
+  - it: tests different values
+    set:
+      priorityClassName: "high-priority"
+      podLabels:
+        podLabel: value
+      replicas: 2
+      podAnnotations:
+        podAnnotation: value
+      terminationGracePeriodSeconds: 15
+      imagePullSecrets:
+        - name: regcred
+      podSecurityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+      exporter:
+        image: theodore86/prometheus-gh-rate-limit-exporter
+        tag: v0.7.1
+        pullPolicy: Always
+        port: 9090
+        github:
+          accountName: theodore86
+          authType: APP
+          appID: "1234567"
+          logLevel: 4
+          installationID: "12345678"
+          mountPath: /secret
+          privateKey: |
+            myprivatekey
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+      nodeSelector:
+        nodeLabel: value
+      affinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: security
+                  operator: In
+                  values:
+                    - S1
+            topologyKey: failure-domain.beta.kubernetes.io/zone
+      tolerations:
+        - key: "key"
+          operator: "Equal"
+          value: "value"
+          effect: "NoSchedule"
+    asserts:
+      - equal:
+          path: spec.template.spec.priorityClassName
+          value: "high-priority"
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 15
+      - equal:
+          path: spec.template.spec.imagePullSecrets
+          value:
+            - name: regcred
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: my-release-github-rate-limits-exporter
+      - equal:
+          path: spec.template.spec.securityContext
+          value:
+            runAsUser: 1000
+            fsGroup: 1000
+            runAsNonRoot: true
+      - equal:
+          path: spec.template.spec.tolerations
+          value:
+            - key: "key"
+              operator: "Equal"
+              value: "value"
+              effect: "NoSchedule"
+      - equal:
+          path: spec.template.spec.affinity
+          value:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: security
+                      operator: In
+                      values:
+                        - S1
+                topologyKey: failure-domain.beta.kubernetes.io/zone
+      - equal:
+          path: spec.template.spec.nodeSelector
+          value:
+            nodeLabel: value
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: app-private-key
+              secret:
+                secretName: my-release-github-rate-limits-exporter
+      - equal:
+          path: spec.template.spec.containers[0]
+          value:
+            name: github-rate-limits-exporter
+            image: theodore86/prometheus-gh-rate-limit-exporter:v0.7.1
+            imagePullPolicy: Always
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              readOnlyRootFilesystem: true
+              allowPrivilegeEscalation: false
+            volumeMounts:
+              - name: app-private-key
+                readOnly: true
+                mountPath: /secret
+            ports:
+              - name: metrics
+                containerPort: 9090
+                protocol: TCP
+            readinessProbe:
+              httpGet:
+                path: /metrics
+                port: metrics
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 100m
+                memory: 512Mi
+            env:
+              - name: GITHUB_ACCOUNT
+                valueFrom:
+                  secretKeyRef:
+                    key: accountName
+                    name: my-release-github-rate-limits-exporter
+              - name: GITHUB_AUTH_TYPE
+                value: app
+              - name: EXPORTER_LOG_LEVEL
+                value: "4"
+              - name: GITHUB_APP_ID
+                valueFrom:
+                  secretKeyRef:
+                    key: appID
+                    name: my-release-github-rate-limits-exporter
+              - name: GITHUB_APP_INSTALLATION_ID
+                valueFrom:
+                  secretKeyRef:
+                    key: installationID
+                    name: my-release-github-rate-limits-exporter
+              - name: GITHUB_APP_PRIVATE_KEY_PATH
+                value: /secret/privateKey
+  - it: tests nameoveride
+    set:
+      nameOverride: gh-rl-exporter
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-release-gh-rl-exporter
+  - it: tests fullnameoverride
+    set:
+      fullnameOverride: gh-rl-exporter-fullname
+    asserts:
+      - equal:
+          path: metadata.name
+          value: gh-rl-exporter-fullname
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: gh-rl-exporter-fullname
+  - it: tests authtype pat
+    set:
+      fullnameOverride: gh-rl-exporter
+      exporter:
+        github:
+          accountName: theodore86
+          authType: pat
+          token: 8rfdgf834343fgfvd
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: GITHUB_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: gh-rl-exporter
+                  key: accountName
+            - name: GITHUB_AUTH_TYPE
+              value: pat
+            - name: EXPORTER_LOG_LEVEL
+              value: "4"
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: gh-rl-exporter
+                  key: token

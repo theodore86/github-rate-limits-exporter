@@ -1,0 +1,28 @@
+---
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "github-rate-limits-exporter.fullname" . }}
+  labels:
+    {{- include "github-rate-limits-exporter.labels" . | nindent 4 }}
+  {{- if .Values.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml .Values.serviceMonitor.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "github-rate-limits-exporter.selectorLabels" . | nindent 8 }}
+  endpoints:
+  - interval: {{ .Values.serviceMonitor.interval | default "30s" }}
+    {{- if .Values.serviceMonitor.targetPort }}
+    targetPort: {{ .Values.serviceMonitor.targetPort | default .Values.service.port | int }}
+    {{- end }}
+    port: metrics
+    path: {{ .Values.serviceMonitor.path | default "/metrics" }}
+  jobLabel: {{ template "github-rate-limits-exporter.fullname" . }}
+{{- end }}
