@@ -192,5 +192,5 @@ def test_github_rate_limits_request_refresh_token(
     freezer.move_to(MOVE_FORWARD_CURRENT_TIME)
     assert github_app_requester.get_rate_limits() == rate_limits_json_dotmap
     assert github_app_requester.token == GithubToken("some-value", NEW_TOKEN_EXPIRATION_TIME)
-    assert github_mock.call_count == 2
+    assert github_mock.call_count == 1
     assert github_app_access_token_mock.call_count == 2
