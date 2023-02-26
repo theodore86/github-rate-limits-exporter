@@ -27,6 +27,14 @@ FROM python:3.11.2-slim AS run
 
 COPY --from=build-env /opt/venv /opt/venv
 
+# CVE-2023-0361
+RUN apt-get update && \
+      apt-get install -y \
+      --only-upgrade \
+      --no-install-recommends \
+      libgnutls30=3.7.1-5+deb11u3 && \
+      rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
 WORKDIR /app
 
 COPY github_rate_limits_exporter/ ./github_rate_limits_exporter
