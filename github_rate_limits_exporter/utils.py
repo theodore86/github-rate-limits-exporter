@@ -9,6 +9,7 @@ import base64
 import binascii
 import datetime
 import logging
+import os
 import queue
 import signal
 import socket
@@ -36,7 +37,9 @@ def is_string_base64_encoded(string: str) -> bool:
     :returns bool: ``True`` if base64 encoded else ``False``.
     """
     try:
-        return base64.b64encode(base64.b64decode(string)).decode() == string
+        return base64.b64encode(base64.b64decode(string)).decode() == string.replace(
+            os.linesep, ""
+        )
     except binascii.Error:
         return False
 

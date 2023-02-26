@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 
 import pytest
 
@@ -48,14 +49,19 @@ def test_is_ipv6_address(ipv6_addr, expected):
 
 @pytest.mark.parametrize(
     "string, expected",
-    [("teststring", False), ("dGVzdHN0cmluZwo=", True), ("3591916071403198536", False)],
+    [
+        ("teststring", False),
+        ("dGVzdHN0cmluZwo=", True),
+        ("3591916071403198536", False),
+        (f"RU5E{os.linesep}IFJTQSBQUklWQVRFIEtFWS0tLS0tCg=={os.linesep}", True),
+    ],
 )
 def test_is_string_base64_encoded(string, expected):
     assert is_string_base64_encoded(string) == expected
 
 
 @pytest.mark.parametrize(
-    "string, expected", [("teststring", "teststring"), ("dGVzdHN0cmluZwo=", "teststring\n")]
+    "string, expected", [("teststring", "teststring"), ("dGVzdHN0cmluZwo=", f"teststring{os.linesep}")]
 )
 def test_base64_decode(string, expected):
     assert base64_decode(string) == expected
