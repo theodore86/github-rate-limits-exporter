@@ -109,7 +109,7 @@ def test_mutual_inclusive_args(namespace, argparser, expectation):
     indirect=True,
 )
 def test_github_pat_auth_env_variables(github_env_vars):
-    args = cli.parsecli()
+    args = cli.parsecli(["--github-auth-type", "pat", "--github-account", "test"])
     assert args.github_account == github_env_vars["GITHUB_ACCOUNT"]
     assert args.github_auth_type == github_env_vars["GITHUB_AUTH_TYPE"]
     assert args.github_token == github_env_vars["GITHUB_TOKEN"]
