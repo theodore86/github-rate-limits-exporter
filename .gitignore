@@ -125,6 +125,10 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+html/
+*.html
+*.css
+cobertura.xml
 
 # Pyre type checker
 .pyre/
@@ -132,3 +136,6 @@ dmypy.json
 # Allure reporting
 .allure/
 allure/
+
+# vscode
+.vscode/
