@@ -50,4 +50,4 @@ jobs:
           exit-code: 1
           ignore-unfixed: true
           severity: CRITICAL,HIGH
-          security-checks: vuln,secret,config
+          scanners: vuln,secret,config
