@@ -5,8 +5,6 @@ on:
     workflows: ["Docker build,test and publish"]
     types:
       - "completed"
-    branches:
-      - "main"
 
 env:
   DOCKERHUB_CHART_REPO: "registry-1.docker.io"
@@ -21,7 +19,7 @@ jobs:
   chart_packaging_and_publishing:
     needs: ["chart_linting_and_testing"]
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref_type == 'tag'}}
     steps:
       - name: "Checkout SCM"
         uses: "actions/checkout@v3.3.0"

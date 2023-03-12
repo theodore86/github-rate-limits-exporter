@@ -3,9 +3,6 @@ name: Helm Chart Linting And Testing
 on:
   workflow_call:
   pull_request:
-  push:
-    branches:
-      - "main"
 
 env:
   PYTHON_VERSION: "3.11"
