@@ -84,8 +84,9 @@ jobs:
         uses: "DamianReeves/write-file-action@v1.2"
         with:
           path: "${{ github.workspace }}/private_key.pem"
-          write-mode: "overwrite"
-          contents: "${{ secrets.APP_PRIVATE_KEY }}"
+          write-mode: overwrite
+          contents: |
+            ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Run chart-testing (install)
         if: github.ref_type == 'tag'
