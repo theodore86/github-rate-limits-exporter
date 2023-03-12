@@ -5,6 +5,9 @@ on:
     workflows: ["Docker build,test and publish"]
     types:
       - "completed"
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 env:
   DOCKERHUB_CHART_REPO: "registry-1.docker.io"
