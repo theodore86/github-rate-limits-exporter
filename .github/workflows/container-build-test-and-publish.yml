@@ -1,6 +1,7 @@
 ---
 name: Docker build,test and publish
 on:
+  workflow_call:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
