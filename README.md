@@ -1,7 +1,8 @@
 # github-rate-limits-exporter
 
 ![Current Tag](https://img.shields.io/github/v/tag/theodore86/github-rate-limits-exporter)
-[![CI](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-test-and-publish.yml/badge.svg)](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-test-and-publish.yml)
+[![Docker CI](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-test-and-publish.yml/badge.svg)](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/container-build-test-and-publish.yml)
+[![Charts CI](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/chart-linting-and-testing.yml//badge.svg)](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/chart-linting-and-testing.yml)
 [![PyPI version](https://badge.fury.io/py/github-rate-limits-exporter.svg)](https://badge.fury.io/py/github-rate-limits-exporter)
 [![Python version](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)
 ![license](https://img.shields.io/github/license/theodore86/github-rate-limits-exporter)
@@ -169,9 +170,9 @@ tox -e dc-clean
 
 ## Kubernetes - Helm chart
 
-[This helm chart helps to install and configure github-rate-limits exporter](charts/github-rate-limits-exporter/README.md) on Kubernetes clusters.
+[This helm chart](charts/github-rate-limits-exporter/README.md) helps to install and configure github-rate-limits exporter on Kubernetes clusters.
 
-### In order to try out (locally) the charts:
+### In order to try out (locally) the charts
 
 - Install the [KIND binary](https://github.com/kubernetes-sigs/kind/releases)
 
