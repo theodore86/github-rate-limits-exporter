@@ -10,7 +10,6 @@ keywords:
 maintainers:
   - name: theodore86
     email: tgeorgomanolis@gmail.com
-
 type: application
 # 1-1 as application source code
-version: 0.7.2
+version: 0.7.3

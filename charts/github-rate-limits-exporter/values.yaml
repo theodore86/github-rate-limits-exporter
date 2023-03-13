@@ -1,10 +1,9 @@
 ---
 nameOverride: ""
 fullnameOverride: ""
-
 exporter:
   image: theodore86/prometheus-gh-rate-limit-exporter
-  tag: v0.7.2
+  tag: v0.7.3
   pullPolicy: IfNotPresent
   port: 10050
   # Definition of the github credentials for either PAT or APP credentials
@@ -24,46 +23,31 @@ exporter:
   #   privateKey: |
   #   ""
   github: {}
-
 service:
   clusterIP: ""
   port: 80
   annotations: {}
   labels: {}
-
 replicaCount: 1
-
 terminationGracePeriodSeconds: 30
-
 imagePullSecrets: []
-
 serviceAccount:
   create: true
   annotations: {}
-
 serviceMonitor:
   enabled: false
   annotations: {}
-
 resources:
   limits:
     cpu: 100m
     memory: 512Mi
   requests:
     memory: 512Mi
-
 podLabels: {}
-
 podAnnotations: {}
-
 podSecurityContext: {}
-
 securityContext: {}
-
 tolerations: []
-
 affinity: {}
-
 nodeSelector: {}
-
 priorityClassName: ""
