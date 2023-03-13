@@ -8,7 +8,9 @@ on:
 env:
   TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
   TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-  TOX_VERSION: "3.27.1"
+  TOX_VERSION: "3.28.0"
+  GITHUB_APP_ID: "${{ secrets.APP_ID }}"
+  GITHUB_APP_PRIVATE_KEY: "${{ secrets.APP_PRIVATE_KEY }}"
 
 jobs:
   app_linting_and_testing:
@@ -54,8 +56,8 @@ jobs:
         uses: "tibdex/github-app-token@v1.8.0"
         id: "generate-token"
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          app_id: "${{ env.GITHUB_APP_ID }}"
+          private_key: "${{ env.GITHUB_APP_PRIVATE_KEY }}"
 
       - name: "Waiting for PYPI to update indexes"
         uses: "juliangruber/sleep-action@v2.0.0"

@@ -7,21 +7,22 @@ on:
 
 env:
   DOCKERHUB_CHART_REPO: "registry-1.docker.io"
+  DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME }}"
+  DOCKERHUB_PASSWORD: "${{ secrets.DOCKERHUB_PASSWORD }}"
+  GITHUB_APP_ID: "${{ secrets.APP_ID }}"
+  GITHUB_APP_PRIVATE_KEY: "${{ secrets.APP_PRIVATE_KEY }}"
   CHART_NAME: "github-rate-limits-exporter"
   HELM_VERSION: "v3.11.1"
   YQ_VERSION: "v4.28.1"
 
 jobs:
-  container_build_test_and_publish:
-    uses: ./.github/workflows/container-build-test-and-publish.yml
-
   chart_linting_and_testing:
     uses: ./.github/workflows/chart-linting-and-testing.yml
+    secrets: "inherit"
 
   chart_packaging_and_publishing:
     needs: ["chart_linting_and_testing"]
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref_type == 'tag'}}
     steps:
       - name: "Checkout SCM"
         uses: "actions/checkout@v3.3.0"
@@ -34,8 +35,8 @@ jobs:
       - name: "Login to Helm registry"
         run: |
           helm registry login ${{ env.DOCKERHUB_CHART_REPO }} \
-            --username ${{ secrets.DOCKERHUB_USERNAME }} \
-            --password ${{ secrets.DOCKERHUB_PASSWORD }}
+            --username ${{ env.DOCKERHUB_USERNAME }} \
+            --password ${{ env.DOCKERHUB_PASSWORD }}
 
       - name: "Set requested Helm package version"
         id: "package_version"
@@ -67,8 +68,8 @@ jobs:
         uses: "tibdex/github-app-token@v1.8.0"
         id: "generate-token"
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          app_id: "${{ env.GITHUB_APP_ID }}"
+          private_key: "${{ env.GITHUB_APP_PRIVATE_KEY }}"
 
       - name: "Create PR for release version file"
         uses: "peter-evans/create-pull-request@v4.2.3"
@@ -93,6 +94,12 @@ jobs:
         uses: "azure/setup-helm@v3"
         with:
           version: "${{ env.HELM_VERSION }}"
+
+      - name: "Set requested Helm package version"
+        id: "package_version"
+        run: |
+          version=$(echo ${{ github.ref_name }} | cut -c 2-)
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
 
       - name: "Waiting for OCI registry to update the indexes"
         uses: "juliangruber/sleep-action@v2.0.0"

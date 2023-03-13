@@ -4,8 +4,8 @@ on:
   workflow_call:
   pull_request:
   push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+    branches:
+      - "main"
 
 env:
   PYTHON_VERSION: "3.11"
@@ -14,10 +14,19 @@ env:
   KIND_VERSION: "v0.17.0"
   KUBECTL_VERSION: "v1.25.0"
   KUBERNETES_VERSION: "1.25.3"
+  GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  GITHUB_APP_PRIVATE_KEY: "${{ secrets.APP_PRIVATE_KEY }}"
+  GITHUB_APP_ID: "${{ secrets.APP_ID }}"
+  GITHUB_APP_INSTALLATION_ID: "${{ secrets.APP_INSTALLATION_ID }}"
 
 jobs:
+  container_build_test_and_publish:
+    uses: ./.github/workflows/container-build-test-and-publish.yml
+    secrets: "inherit"
+
   chart_linting_and_testing:
     runs-on: ubuntu-latest
+    needs: ["container_build_test_and_publish"]
     steps:
       - name: "Checkout source code"
         uses: "actions/checkout@v3.3.0"
@@ -86,7 +95,7 @@ jobs:
           path: "${{ github.workspace }}/private_key.pem"
           write-mode: overwrite
           contents: |
-            ${{ secrets.APP_PRIVATE_KEY }}
+            ${{ env.GITHUB_APP_PRIVATE_KEY }}
 
       - name: Run chart-testing (install)
         if: github.ref_type == 'tag'
@@ -94,8 +103,8 @@ jobs:
           ct install --all --config .chart-testing.yaml \
           --helm-extra-set-args "--set=exporter.tag=${{ github.ref_name }}\
             --set=exporter.github.accountName=${{ github.event.repository.name }}\
-            --set=exporter.github.token=${{ secrets.GITHUB_TOKEN }}\
+            --set=exporter.github.token=${{ env.GITHUB_TOKEN }}\
             --set=exporter.github.logLevel=4\
-            --set=exporter.github.appID=${{ secrets.APP_ID }}\
-            --set=exporter.github.installationID=${{ secrets.APP_INSTALLATION_ID }}\
+            --set=exporter.github.appID=${{ env.GITHUB_APP_ID }}\
+            --set=exporter.github.installationID=${{ env.GITHUB_APP_INSTALLATION_ID }}\
             --set-file=exporter.github.privateKey=${{ github.workspace }}/private_key.pem"
