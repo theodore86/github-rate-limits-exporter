@@ -9,7 +9,7 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     image: prom-gh-rl-exporter:latest
-    restart: on-failure:5
+    restart: on-failure:30
     expose:
       - ${EXPORTER_LISTEN_PORT:-10050}
     ports:
