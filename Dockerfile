@@ -44,6 +44,7 @@ RUN useradd -ms /bin/bash ubuntu
 USER ubuntu
 
 ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONFAULTHANDLER 1
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 10050
