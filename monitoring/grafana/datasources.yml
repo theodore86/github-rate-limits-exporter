@@ -5,6 +5,7 @@ datasources:
     type: prometheus
     access: false
     url: http://prometheus:9090
+    uid: PBFA97CFB590B2093
     basic_auth: false
     editable: true
 ---
