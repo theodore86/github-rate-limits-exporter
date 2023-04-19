@@ -42,7 +42,7 @@ jobs:
           failure-threshold: error
 
       - name: "Run Trivys"
-        uses: "aquasecurity/trivy-action@0.9.2"
+        uses: "aquasecurity/trivy-action@0.10.0"
         with:
           scan-type: fs
           scan-ref: Dockerfile
