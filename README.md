@@ -173,7 +173,15 @@ tox -e dc-clean
 
 ### In order to try out (locally) the charts
 
-- Install the [KIND binary](https://github.com/kubernetes-sigs/kind/releases)
+- Install the tools:
+
+  - [KIND binary](https://github.com/kubernetes-sigs/kind/releases)
+  - [Helmfile binary](https://github.com/helmfile/helmfile/releases)
+
+
+```bash
+sudo bash kubernetes/prerequisites.sh
+```
 
 - Create the KIND cluster:
 
@@ -181,7 +189,6 @@ tox -e dc-clean
 kind create cluster --name monitor --config kubernetes/kind.yml
 ```
 
-- Install the [helmfile binary](https://github.com/helmfile/helmfile/releases)
 
 - Bring up the *github-rate-limits exporter* and the Kubernetes Prometheus stack:
 
