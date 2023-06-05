@@ -21,6 +21,7 @@ _helmfile() {
   chmod +x helmfile && \
   mv helmfile /usr/local/bin/helmfile && \
   helmfile -v 2>/dev/null && \
+  helmfile init --force 2>/dev/null && \
   _return=0
   return "${_return}"
 }
