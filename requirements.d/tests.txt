@@ -1,6 +1,6 @@
 # Requirements for [testenv:tests] virtualenv
 
-pytest==7.3.1
+pytest==7.3.2
 pytest-cov==4.1.0
 pytest-mock==3.10.0
 pytest-randomly==3.12.0
