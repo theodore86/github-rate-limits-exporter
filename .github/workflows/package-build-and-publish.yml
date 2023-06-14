@@ -65,7 +65,7 @@ jobs:
           time: 1m
 
       - name: "Create PR for release version file"
-        uses: "peter-evans/create-pull-request@v5.0.1"
+        uses: "peter-evans/create-pull-request@v5.0.2"
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: "chore: update package version file to: ${{ github.ref_name }}"
