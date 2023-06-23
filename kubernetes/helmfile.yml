@@ -80,3 +80,12 @@ releases:
         file: {{ requiredEnv "GITHUB_APP_SRC_PRIVATE_KEY_PATH" }}
       - name: exporter.github.logLevel
         value: {{ env "EXPORTER_LOG_LEVEL" | default 4 | int }}
+    hooks:
+    - events: ["prepare"]
+      showlogs: true
+      command: "kubectl"
+      args: ["apply", "-f", "configmap.yml"]
+    - events: ["postuninstall"]
+      showlogs: true
+      command: "kubectl"
+      args: ["delete", "-f", "configmap.yml"]
