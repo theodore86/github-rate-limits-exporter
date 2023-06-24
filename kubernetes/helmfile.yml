@@ -47,6 +47,10 @@ releases:
             type: NodePort
             nodePort: 31000
           sidecar:
+            dashboards:
+              provider:
+                foldersFromFilesStructure: true
+              folderAnnotation: grafana_folder
             datasources:
               uid: PBFA97CFB590B2093
         alertmanager:

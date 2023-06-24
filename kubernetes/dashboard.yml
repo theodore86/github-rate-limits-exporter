@@ -1,9 +1,680 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: github-rate-limits-exporter-dashboard
+  name: github-rate-limits-exporter-dashboards
+  namespace: monitoring
   labels:
     grafana_dashboard: "1"
+  annotations:
+    grafana_folder: "Github"
 data:
   github-rate-limits-exporter.json: |
-    {{ readFile "../monitoring/grafana/dashboards/gh-rate-limits-api.json" }}
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "target": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "links": [],
+      "liveNow": false,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "description": "The time at which the current Github API Rate Limit window resets.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "center",
+                "displayMode": "color-text",
+                "filterable": false,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Value"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "DateTime"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 0
+          },
+          "id": 10,
+          "links": [
+            {
+              "title": "Github-API-Rate-Limits-Reset Timestamp",
+              "url": "https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28"
+            }
+          ],
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.2.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "label_join(sum by (__name__) ({type=\"reset\"}), \"Metric\", \"\", \"__name__\") * 1000",
+              "format": "table",
+              "instant": true,
+              "interval": "30",
+              "legendFormat": "{{label_name}}",
+              "range": false,
+              "refId": "A"
+            }
+          ],
+          "title": "Github API Rate Limits (Time to) Reset",
+          "transformations": [
+            {
+              "id": "convertFieldType",
+              "options": {
+                "conversions": [
+                  {
+                    "destinationType": "time",
+                    "targetField": "Value"
+                  }
+                ],
+                "fields": {}
+              }
+            }
+          ],
+          "transparent": true,
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "description": "Grafana dashboard to monitor Github Integration Manifest API Rate Limits",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-RdYlGr"
+              },
+              "mappings": [],
+              "noValue": "N/A",
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 70
+                  },
+                  {
+                    "color": "red",
+                    "value": 85
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Integrate Manifest API - used"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "continuous-GrYlRd"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 0
+          },
+          "id": 8,
+          "links": [
+            {
+              "title": "Integration Manifest API",
+              "url": "https://docs.github.com/en/developers/apps/building-github-apps/creating-a-github-app-from-a-manifest#3-you-exchange-the-temporary-code-to-retrieve-the-app-configuration"
+            }
+          ],
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "9.2.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "editorMode": "code",
+              "expr": "github_rate_limits_integration_manifest{account=\"$account\", type=~\"limit|remaining|used\"}",
+              "legendFormat": "Integrate Manifest API - {{type}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Integration Manifest API Rate Limits",
+          "transparent": true,
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "description": "Grafana dashboard to monitor Github GraphQL API Rate Limits",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-RdYlGr"
+              },
+              "mappings": [],
+              "noValue": "N/A",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "GraphQL API - used"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "continuous-GrYlRd"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 8
+          },
+          "id": 6,
+          "links": [
+            {
+              "title": "github-graphql-api-rate-limits",
+              "url": "https://docs.github.com/en/graphql"
+            }
+          ],
+          "options": {
+            "displayMode": "gradient",
+            "minVizHeight": 10,
+            "minVizWidth": 0,
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "text": {
+              "titleSize": 20
+            }
+          },
+          "pluginVersion": "9.2.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "github_rate_limits_graphql{account=\"$account\", type=~\"limit|remaining|used\"}",
+              "instant": false,
+              "legendFormat": "GraphQL API - {{type}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Github GraphQL API Rate Limits",
+          "transparent": true,
+          "type": "bargauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "description": "Grafana dashboard to monitor Github Core API Rate Limits",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-RdYlGr"
+              },
+              "mappings": [],
+              "noValue": "N/A",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Core API - used"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "continuous-GrYlRd"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 8
+          },
+          "id": 2,
+          "links": [
+            {
+              "title": "github-api-core-rate-limits",
+              "url": "https://docs.github.com/en/rest/rate-limit"
+            }
+          ],
+          "options": {
+            "displayMode": "gradient",
+            "minVizHeight": 10,
+            "minVizWidth": 0,
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true
+          },
+          "pluginVersion": "9.2.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "github_rate_limits_core{account=\"$account\", type=~\"limit|remaining|used\"}",
+              "format": "time_series",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "Core API - {{type}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Github Core API Rate Limits",
+          "transparent": true,
+          "type": "bargauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "description": "Grafana dashboard to monitor Github Search API Rate Limits",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-RdYlGr"
+              },
+              "custom": {
+                "fillOpacity": 16,
+                "lineWidth": 6,
+                "spanNulls": false
+              },
+              "mappings": [],
+              "noValue": "N/A",
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Search API - used"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "continuous-GrYlRd"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 16
+          },
+          "id": 4,
+          "links": [
+            {
+              "title": "github-search-api-rate-limits",
+              "url": "https://docs.github.com/en/rest/search"
+            }
+          ],
+          "options": {
+            "alignValue": "center",
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "mergeValues": true,
+            "rowHeight": 0.91,
+            "showValue": "always",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "editorMode": "code",
+              "expr": "github_rate_limits_search{account=\"$account\", type=~\"limit|remaining|used\"}",
+              "legendFormat": "Search API - {{type}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Github Search API Rate Limits",
+          "type": "state-timeline"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "description": "Grafana dashboard to monitor the retrieval and update of the code scanning alerts from a Github repository",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [
+                {
+                  "title": "github-api-code-scanning-upload",
+                  "url": "https://docs.github.com/en/rest/code-scanning"
+                }
+              ],
+              "mappings": [],
+              "noValue": "N/A",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "remaining"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "continuous-RdYlGr"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "0": {
+                            "color": "dark-red",
+                            "index": 0
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 17
+          },
+          "id": 12,
+          "links": [
+            {
+              "title": "github-api-code-scanning-upload-rate-limits",
+              "url": "https://docs.github.com/en/rest/code-scanning"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "9.2.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "editorMode": "code",
+              "expr": "github_rate_limits_code_scanning_upload{account=\"$account\", type=~\"limit|remaining|used\"}",
+              "legendFormat": "{{type}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Github API Code Scanning Upload Rate Limits",
+          "transparent": true,
+          "type": "stat"
+        }
+      ],
+      "refresh": "10s",
+      "schemaVersion": 37,
+      "style": "dark",
+      "tags": [
+        "github",
+        "monitoring"
+      ],
+      "templating": {
+        "list": [
+          {
+            "current": {
+              "selected": false,
+              "text": "theodore86",
+              "value": "theodore86"
+            },
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "definition": "label_values(github_rate_limits_core{type=~\"used|limit|remaining\"}, account)",
+            "description": "Github account",
+            "hide": 0,
+            "includeAll": false,
+            "label": "account",
+            "multi": false,
+            "name": "account",
+            "options": [],
+            "query": {
+              "query": "label_values(github_rate_limits_core{type=~\"used|limit|remaining\"}, account)",
+              "refId": "StandardVariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "type": "query"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-5m",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Github Core API Rate Limits",
+      "uid": "RdEZ-XvVz",
+      "version": 1,
+      "weekStart": ""
+    }
