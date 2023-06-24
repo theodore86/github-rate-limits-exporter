@@ -1,0 +1,70 @@
+suite: test configmap
+release:
+    name: my-release
+templates:
+    - configmap.yaml
+tests:
+  - it: disabled (defaults)
+    set:
+      grafana:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: enabled - without labels or annotations
+    set:
+      grafana:
+        enabled: true
+    asserts:
+      - isKind:
+          of: ConfigMapList
+      - equal:
+          path: apiVersion
+          value: v1
+      - equal:
+          path: items[0].kind
+          value: ConfigMap
+      - equal:
+          path: items[0].apiVersion
+          value: v1
+      - equal:
+          path: items[0].metadata.name
+          value: my-release-github-rate-limits-exporter-gh-rate-limits-api
+      - equal:
+          path: items[0].metadata.labels.app\.kubernetes\.io/name
+          value: my-release-github-rate-limits-exporter
+      - matchRegex:
+          path: items[0].metadata.labels.helm\.sh/chart
+          pattern: github-rate-limits-exporter-\d+\.\d+\.\d+
+      - equal:
+          path: items[0].metadata.labels.app\.kubernetes\.io/instance
+          value: my-release
+      - equal:
+          path: items[0].metadata.labels.app\.kubernetes\.io/managed-by
+          value: Helm
+      - matchRegex:
+          path: items[0].metadata.labels.app\.kubernetes\.io/version
+          pattern: \d+\.\d+\.\d+
+      - isNull:
+          path: items[0].metadata.labels.grafana_dashboard
+      - isNull:
+          path: items[0].metadata.annotations
+      - isNotEmpty:
+          path: items[0].data
+  - it: enabled - labels and annotations
+    set:
+      grafana:
+        enabled: true
+        labels:
+          grafana_dashboard: "1"
+        annotations:
+          grafana_folder: "Github"
+    asserts:
+      - equal:
+          path: items[0].metadata.labels.grafana_dashboard
+          value: "1"
+      - equal:
+          path: items[0].metadata.annotations.grafana_folder
+          value: "Github"
+      - isNotEmpty:
+          path: items[0].data

@@ -1,0 +1,26 @@
+{{- if .Values.grafana.enabled }}
+{{- $files := .Files.Glob "dashboards/*.json" }}
+{{- if $files }}
+apiVersion: v1
+kind: ConfigMapList
+items:
+{{- range $path, $fileContents := $files }}
+{{- $dashboardName := regexReplaceAll "(^.*/)(.*)\\.json$" $path "${2}" }}
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: {{ printf "%s-%s" (include "github-rate-limits-exporter.fullname" $) $dashboardName | trunc 63 | trimSuffix "-" }}
+    labels:
+      {{- include "github-rate-limits-exporter.labels" $ | nindent 6 }}
+      {{- if $.Values.grafana.labels }}
+      {{- toYaml $.Values.grafana.labels | nindent 6 }}
+      {{- end }}
+    {{- if $.Values.grafana.annotations }}
+    annotations:
+    {{- toYaml $.Values.grafana.annotations | nindent 6 }}
+    {{- end }}    
+  data:
+    {{ $dashboardName }}.json: {{ $.Files.Get $path | toJson }}
+{{- end }}
+{{- end }}
+{{- end }}
