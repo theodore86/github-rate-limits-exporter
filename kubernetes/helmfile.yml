@@ -84,8 +84,8 @@ releases:
     - events: ["prepare"]
       showlogs: true
       command: "kubectl"
-      args: ["apply", "-f", "configmap.yml"]
+      args: ["apply", "-f", "dashboard.yml"]
     - events: ["postuninstall"]
       showlogs: true
       command: "kubectl"
-      args: ["delete", "-f", "configmap.yml"]
+      args: ["delete", "-f", "dashboard.yml"]
