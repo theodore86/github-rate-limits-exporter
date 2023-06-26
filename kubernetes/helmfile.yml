@@ -61,7 +61,13 @@ releases:
     namespace: monitoring
     chart: ../charts/github-rate-limits-exporter
     values:
-      - serviceMonitor:
+      - grafana:
+          enabled: true
+          labels:
+            grafana_dashboard: "1"
+          annotations:
+            grafana_folder: "Github"
+        serviceMonitor:
           enabled: true
         service:
           labels:
@@ -84,12 +90,3 @@ releases:
         file: {{ requiredEnv "GITHUB_APP_SRC_PRIVATE_KEY_PATH" }}
       - name: exporter.github.logLevel
         value: {{ env "EXPORTER_LOG_LEVEL" | default 4 | int }}
-    hooks:
-    - events: ["prepare"]
-      showlogs: true
-      command: "kubectl"
-      args: ["apply", "-f", "dashboard.yml"]
-    - events: ["postuninstall"]
-      showlogs: true
-      command: "kubectl"
-      args: ["delete", "-f", "dashboard.yml"]

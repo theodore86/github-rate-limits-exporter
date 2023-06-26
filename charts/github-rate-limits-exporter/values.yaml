@@ -52,6 +52,12 @@ resources:
   requests:
     memory: 512Mi
 
+# Integration with Grafana operator
+grafana:
+  enabled: false
+  labels: {}
+  annotations: {}
+
 podLabels: {}
 
 podAnnotations: {}
