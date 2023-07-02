@@ -50,3 +50,13 @@ Standar labels for workload selector filtering.
 app.kubernetes.io/name: {{ template "github-rate-limits-exporter.fullname" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- /*
+Checksum annotations for configmaps and secrets.
+*/ -}}
+{{- define "github-rate-limits-exporter.annotations.checksum" -}}
+{{- if .Values.grafana.enabled -}}
+checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- end }}
+checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+{{- end }}
