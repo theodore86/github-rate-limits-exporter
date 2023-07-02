@@ -21,10 +21,13 @@ spec:
         {{- toYaml .Values.podLabels | nindent 8 }}
         {{- end }}
       annotations:
+        {{- include "github-rate-limits-exporter.annotations.checksum" . | nindent 8 }}
+        {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      {{ if .Values.priorityClassName }}
+      {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       imagePullSecrets:
