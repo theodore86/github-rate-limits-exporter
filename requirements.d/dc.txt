@@ -1,5 +1,5 @@
 # Requirements for [testenv:dc] (docker-compose) virtualenv
 
-cython<3.0.0
+cython<4.0.0
 pyyaml==5.3.1
 docker-compose==1.29.2
