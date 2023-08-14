@@ -150,6 +150,10 @@ export GF_SECURITY_PASSWORD=password
 tox -e dc-run
 ```
 
+### Connect to Portainer management UI
+
+- [Portainer](https://localhost:9443) (credentials: *admin/adminpassword*)
+
 ### Connect to Prometheus, Grafana and AlertManager
 
 - [Prometheus](http://localhost:9090)
