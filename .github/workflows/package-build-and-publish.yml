@@ -53,7 +53,7 @@ jobs:
           tox -e build_dist
 
       - name: "Generate Github App token"
-        uses: "tibdex/github-app-token@v2.0.0"
+        uses: "tibdex/github-app-token@v2.1.0"
         id: "generate-token"
         with:
           app_id: "${{ env.GITHUB_APP_ID }}"
