@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.3
-FROM python:3.11.4-slim AS build
+FROM python:3.11.5-slim AS build
 
 RUN python3 -m venv /opt/venv
 
@@ -23,23 +23,18 @@ RUN --mount=type=cache,target=/root/.cache/ \
       python3 -m pip install -U setuptools==${PYTHON_SETUPTOOLS_VERSION} && \
       python3 -m pip install -r requirements.txt
 
-FROM python:3.11.2-slim AS run
+FROM python:3.11.5-slim AS run
 
-COPY --from=build-env /opt/venv /opt/venv
-
-# CVE-2022-29458
-# CVE-2023-0464
+# CVE-2023-4911
 RUN apt-get update && \
       apt-get install -y \
       --only-upgrade \
       --no-install-recommends \
-      libncursesw6=6.2+20201114-2+deb11u1 \
-      ncurses-base=6.2+20201114-2+deb11u1 \
-      ncurses-bin=6.2+20201114-2+deb11u1 \
-      libssl1.1=1.1.1n-0+deb11u5 \
-      openssl=1.1.1n-0+deb11u5 \
-      libc-bin=2.31-13+deb11u7 && \
+      libc6=2.36-9+deb12u3 \
+      libc-bin=2.36-9+deb12u3 && \
       rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+COPY --from=build-env /opt/venv /opt/venv
 
 WORKDIR /app
 
