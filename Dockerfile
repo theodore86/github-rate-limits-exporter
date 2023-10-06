@@ -37,7 +37,8 @@ RUN apt-get update && \
       ncurses-base=6.2+20201114-2+deb11u1 \
       ncurses-bin=6.2+20201114-2+deb11u1 \
       libssl1.1=1.1.1n-0+deb11u5 \
-      openssl=1.1.1n-0+deb11u5 && \
+      openssl=1.1.1n-0+deb11u5 \
+      libc-bin=2.31-13+deb11u7 && \
       rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 WORKDIR /app
