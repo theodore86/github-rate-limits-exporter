@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.3
-FROM python:3.11.5-slim AS build
+FROM python:3.12.0-slim AS build
 
 RUN python3 -m venv /opt/venv
 
@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/root/.cache/ \
       python3 -m pip install -U setuptools==${PYTHON_SETUPTOOLS_VERSION} && \
       python3 -m pip install -r requirements.txt
 
-FROM python:3.11.5-slim AS run
+FROM python:3.12.0-slim AS run
 
 # CVE-2023-4911
 RUN apt-get update && \
