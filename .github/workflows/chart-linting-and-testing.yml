@@ -44,7 +44,7 @@ jobs:
           python-version: "${{ env.PYTHON_VERSION }}"
 
       - name: "Setup chart-testing (lint)"
-        uses: "helm/chart-testing-action@v2.4.0"
+        uses: "helm/chart-testing-action@v2.6.0"
 
       - name: "Run chart-testing (list-changed)"
         id: list-changed
