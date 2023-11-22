@@ -31,7 +31,8 @@ RUN apt-get update && \
       --only-upgrade \
       --no-install-recommends \
       libc6=2.36-9+deb12u3 \
-      libc-bin=2.36-9+deb12u3 && \
+      libc-bin=2.36-9+deb12u3 \
+      libssl3=3.0.11-1~deb12u2  && \
       rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 COPY --from=build-env /opt/venv /opt/venv
