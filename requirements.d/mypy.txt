@@ -1,5 +1,5 @@
 # Requirements for [testenv:mypy] virtualenv
 
 mypy==1.4.1; python_version <= "3.7"
-mypy==1.7.0; python_version > "3.7"
+mypy==1.7.1; python_version > "3.7"
 types-requests==2.31.0.10
