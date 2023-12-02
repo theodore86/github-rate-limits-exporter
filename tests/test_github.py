@@ -1,6 +1,6 @@
 from argparse import Namespace
 from contextlib import nullcontext as does_not_raise
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 
@@ -126,6 +126,7 @@ def test_github_app_installation_id(args, expectation, request):
     [
         ("dfgftgh4FSE#", CURRENT_TIME, does_not_raise()),
         ("token", "date", pytest.raises(ValueError)),
+        ("token", datetime(2023, 12, 23), pytest.raises(ValueError))
     ],
 )
 def test_github_token_expires_at(token, expires_at, expectation):
@@ -165,7 +166,7 @@ def test_github_rate_limits_requester_app_token_init(
 
 def test_github_rate_limits_requester_pat_token_init(github_pat_requester):
     assert github_pat_requester.token == GithubToken(
-        "some-value", datetime(2042, 2, 15, 12, 45)
+        "some-value", datetime(2042, 2, 15, 12, 45, tzinfo=timezone.utc)
     )
 
 
@@ -191,6 +192,8 @@ def test_github_rate_limits_request_refresh_token(
 ):
     freezer.move_to(MOVE_FORWARD_CURRENT_TIME)
     assert github_app_requester.get_rate_limits() == rate_limits_json_dotmap
-    assert github_app_requester.token == GithubToken("some-value", NEW_TOKEN_EXPIRATION_TIME)
+    assert github_app_requester.token == GithubToken(
+        "some-value", NEW_TOKEN_EXPIRATION_TIME
+    )
     assert github_mock.call_count == 1
     assert github_app_access_token_mock.call_count == 2

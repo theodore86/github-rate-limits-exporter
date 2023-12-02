@@ -10,7 +10,10 @@ from github_rate_limits_exporter import cli, exceptions
     "addr, expectation",
     [
         ("test", pytest.raises(argparse.ArgumentTypeError)),
-        ("1200:0000:AB00:1234:O000:2552:7777:1313", pytest.raises(argparse.ArgumentTypeError)),
+        (
+            "1200:0000:AB00:1234:O000:2552:7777:1313",
+            pytest.raises(argparse.ArgumentTypeError),
+        ),
         ("::1.1.1", pytest.raises(argparse.ArgumentTypeError)),
     ],
 )
@@ -77,7 +80,10 @@ def test_argparser_error_msg(argparser):
             argparse.Namespace(github_auth_type="unknown"),
             pytest.raises(exceptions.ArgumentError),
         ),
-        (argparse.Namespace(github_auth_type="pat", github_token="token"), does_not_raise()),
+        (
+            argparse.Namespace(github_auth_type="pat", github_token="token"),
+            does_not_raise(),
+        ),
         (
             argparse.Namespace(
                 github_auth_type="app",

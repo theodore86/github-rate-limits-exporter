@@ -151,7 +151,10 @@ def github_env_vars(request):
 @pytest.fixture(scope="module")
 def access_token():
     """Returns a GithubToken instance"""
-    return github.GithubToken("some-value", datetime.datetime(2022, 12, 24, 9, 25, 38))
+    return github.GithubToken(
+        "token-value",
+        datetime.datetime(2022, 12, 24, 9, 25, 38, tzinfo=datetime.timezone.utc),
+    )
 
 
 @pytest.fixture
