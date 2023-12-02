@@ -61,7 +61,8 @@ def test_is_string_base64_encoded(string, expected):
 
 
 @pytest.mark.parametrize(
-    "string, expected", [("teststring", "teststring"), ("dGVzdHN0cmluZwo=", f"teststring{os.linesep}")]
+    "string, expected",
+    [("teststring", "teststring"), ("dGVzdHN0cmluZwo=", f"teststring{os.linesep}")],
 )
 def test_base64_decode(string, expected):
     assert base64_decode(string) == expected
@@ -93,7 +94,7 @@ def test_get_logger(logger, caplog, msg, level):
 
 def test_extended_datetime_now(freezer):
     freezer.move_to("2023-01-15")
-    expected = datetime.datetime(2023, 1, 22)
+    expected = datetime.datetime(2023, 1, 22, tzinfo=datetime.timezone.utc)
     assert extend_datetime_now(weeks=1) == expected
 
 

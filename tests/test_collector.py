@@ -19,9 +19,13 @@ def test_add_metrics(
         "API requests in search per hour",
         labels=["account", "type"],
     )
-    expected_metric.add_metric(["github_account", "limit"], float(30), CURRENT_TIMESTAMP)
+    expected_metric.add_metric(
+        ["github_account", "limit"], float(30), CURRENT_TIMESTAMP
+    )
     expected_metric.add_metric(["github_account", "used"], float(12), CURRENT_TIMESTAMP)
-    expected_metric.add_metric(["github_account", "remaining"], float(18), CURRENT_TIMESTAMP)
+    expected_metric.add_metric(
+        ["github_account", "remaining"], float(18), CURRENT_TIMESTAMP
+    )
     expected_metric.add_metric(
         ["github_account", "reset"], float(1372697452), CURRENT_TIMESTAMP
     )
@@ -37,7 +41,6 @@ def test_collect_metrics(
     collector,
     mock_unix_timestamp,
 ):
-
     core = GaugeMetricFamily(
         "github_rate_limits_core",
         "API requests in core per hour",
@@ -66,7 +69,9 @@ def test_collect_metrics(
     graphql.add_metric(["github_account", "limit"], float(5000), CURRENT_TIMESTAMP)
     graphql.add_metric(["github_account", "used"], float(7), CURRENT_TIMESTAMP)
     graphql.add_metric(["github_account", "remaining"], float(4993), CURRENT_TIMESTAMP)
-    graphql.add_metric(["github_account", "reset"], float(1372700389), CURRENT_TIMESTAMP)
+    graphql.add_metric(
+        ["github_account", "reset"], float(1372700389), CURRENT_TIMESTAMP
+    )
 
     integration_manifest = GaugeMetricFamily(
         "github_rate_limits_integration_manifest",
@@ -76,7 +81,9 @@ def test_collect_metrics(
     integration_manifest.add_metric(
         ["github_account", "limit"], float(5000), CURRENT_TIMESTAMP
     )
-    integration_manifest.add_metric(["github_account", "used"], float(1), CURRENT_TIMESTAMP)
+    integration_manifest.add_metric(
+        ["github_account", "used"], float(1), CURRENT_TIMESTAMP
+    )
     integration_manifest.add_metric(
         ["github_account", "remaining"], float(4999), CURRENT_TIMESTAMP
     )
@@ -89,8 +96,12 @@ def test_collect_metrics(
         "API requests in code_scanning_upload per hour",
         labels=["account", "type"],
     )
-    code_scanning_upload.add_metric(["github_account", "limit"], float(500), CURRENT_TIMESTAMP)
-    code_scanning_upload.add_metric(["github_account", "used"], float(20), CURRENT_TIMESTAMP)
+    code_scanning_upload.add_metric(
+        ["github_account", "limit"], float(500), CURRENT_TIMESTAMP
+    )
+    code_scanning_upload.add_metric(
+        ["github_account", "used"], float(20), CURRENT_TIMESTAMP
+    )
     code_scanning_upload.add_metric(
         ["github_account", "remaining"], float(480), CURRENT_TIMESTAMP
     )

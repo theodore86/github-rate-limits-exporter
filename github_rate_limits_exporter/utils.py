@@ -132,7 +132,7 @@ def extend_datetime_now(weeks: int = 1) -> datetime.datetime:
     :params int weeks: Number of weeks
     :returns datetime.datetime: The current datetime object extend by X weeks.
     """
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.timezone.utc)
     return now + datetime.timedelta(weeks=weeks)
 
 

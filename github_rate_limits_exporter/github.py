@@ -150,8 +150,10 @@ class GithubToken:
     def expires_at(self, value: datetime.datetime) -> None:
         if not isinstance(value, datetime.datetime):
             raise ValueError(
-                f"Token expiration time must be a datetime type: {value!r}"
+                f"Token expiration date must be a datetime type: {value!r}"
             )
+        if value.tzinfo is None:
+            raise ValueError("Token expiration date must be timezone aware")
         self._expires_at = value
 
     def has_expired(self, seconds: int = 300) -> bool:
@@ -160,8 +162,9 @@ class GithubToken:
         :seconds int: Seconds to extended the current time.
         :returns bool: ``True`` or ``False`` if token has expired compared to the current time.
         """
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         now = now + datetime.timedelta(seconds=seconds)
+        logger.debug("Github Token expires at: %s", self.expires_at)
         return self.expires_at < now
 
 
@@ -191,7 +194,7 @@ class GithubRateLimitsRequester:
     def get_rate_limits(self) -> dotmap.DotMap:
         """Retrieve the Github API rate-limits"""
         if self.token.has_expired():
-            logger.debug("Github Token will expired at: %s", self.token.expires_at)
+            logger.debug("Github Token expired at: %s", self.token.expires_at)
             self._refresh_token()
         rate_limits = self._api.get_rate_limit()
         return dotmap.DotMap(rate_limits.raw_data)
