@@ -25,14 +25,14 @@ RUN --mount=type=cache,target=/root/.cache/ \
 
 FROM python:3.11.5-slim AS run
 
-# CVE-2023-4911
 RUN apt-get update && \
       apt-get install -y \
       --only-upgrade \
       --no-install-recommends \
       libc6=2.36-9+deb12u3 \
       libc-bin=2.36-9+deb12u3 \
-      libssl3=3.0.11-1~deb12u2  && \
+      libssl3=3.0.11-1~deb12u2  \
+      perl-base=5.36.0-7+deb12u1 && \
       rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 COPY --from=build-env /opt/venv /opt/venv
