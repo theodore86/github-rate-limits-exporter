@@ -60,7 +60,7 @@ jobs:
           private_key: "${{ env.GITHUB_APP_PRIVATE_KEY }}"
 
       - name: "Waiting for PYPI to update indexes"
-        uses: "juliangruber/sleep-action@v2.0.0"
+        uses: "juliangruber/sleep-action@v2.0.3"
         with:
           time: 1m
 
