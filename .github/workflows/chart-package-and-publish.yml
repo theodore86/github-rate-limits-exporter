@@ -72,7 +72,7 @@ jobs:
           private_key: "${{ env.GITHUB_APP_PRIVATE_KEY }}"
 
       - name: "Create PR for release version file"
-        uses: "peter-evans/create-pull-request@v5.0.2"
+        uses: "peter-evans/create-pull-request@v6.0.0"
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: "chore: bump helm charts to version: ${{ steps.package_version.outputs.VERSION }}"
