@@ -90,7 +90,7 @@ jobs:
 
       - name: "Create exporter application private key"
         if: github.ref_type == 'tag'
-        uses: "DamianReeves/write-file-action@v1.2"
+        uses: "DamianReeves/write-file-action@v1.3"
         with:
           path: "${{ github.workspace }}/private_key.pem"
           write-mode: overwrite
