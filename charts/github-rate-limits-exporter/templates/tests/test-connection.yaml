@@ -1,17 +1,20 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ template "github-rate-limits-exporter.fullname" . }}-test-connection"
+  name: {{ template "github-rate-limits-exporter.fullname" . }}-test-connection
   labels:
     {{- include "github-rate-limits-exporter.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
 spec:
   backoffLimit: 0
   template:
     spec:
       containers:
         - name: curl
-          image: curlimages/curl:7.88.1
+          image: curlimages/curl:8.5.0
           args: ['{{ template "github-rate-limits-exporter.fullname" . }}:{{ .Values.service.port }}/metrics']
       restartPolicy: Never
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}

@@ -12,7 +12,7 @@ _arch() {
 
 
 _helmfile() {
-  local helmfile_version='v0.153.1'
+  local helmfile_version='v0.162.0'
   local helmfile_location="https://github.com/helmfile/helmfile/releases/download/${helmfile_version}"
   local helmfile_filename="helmfile_${helmfile_version:1}_${OS}_$(_arch).tar.gz"
   local _return=1
@@ -28,7 +28,7 @@ _helmfile() {
 
 
 _helm() {
-  local helm_version='v3.12.0'
+  local helm_version='v3.14.1'
   local helm_location='https://get.helm.sh'
   local helm_filename="helm-${helm_version}-${OS}-$(_arch).tar.gz"
   local _return=1
@@ -45,7 +45,7 @@ _helm() {
 
 
 _kind() {
-  local kind_version='v0.19.0'
+  local kind_version='v0.20.0'
   local kind_location="https://github.com/kubernetes-sigs/kind/releases/download/${kind_version}"
   local kind_filename="kind-${OS}-$(_arch)"
   local _return=1
