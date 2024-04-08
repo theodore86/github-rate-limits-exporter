@@ -3,4 +3,4 @@
 mypy==1.4.1; python_version <= "3.7"
 mypy==1.9.0; python_version > "3.7"
 types-requests==2.31.0.20231231; python_version <= "3.7"
-types-requests==2.31.0.20240311; python_version > "3.7"
+types-requests==2.31.0.20240406; python_version > "3.7"
