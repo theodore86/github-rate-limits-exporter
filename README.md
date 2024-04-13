@@ -177,38 +177,41 @@ tox -e dc-clean
 
 ### In order to try out (locally) the charts
 
-- Install the tools:
+- Install:
 
-  - [KIND binary](https://github.com/kubernetes-sigs/kind/releases)
-  - [Helmfile binary](https://github.com/helmfile/helmfile/releases)
+  - [Devbox](https://github.com/jetify-com/devbox)
 
-
-```bash
-sudo bash kubernetes/prerequisites.sh
-```
-
-- Create the KIND cluster:
 
 ```bash
-kind create cluster --name monitor --config kubernetes/kind.yml
+curl -fsSL https://get.jetify.com/devbox | bash
 ```
 
+- Create the cluster:
+
+```bash
+cd kubernetes; devbox run start-cluster
+```
+
+- Adjust the environment file (*.env*):
+
+```bash
+vim .env
+```
 
 - Bring up the *github-rate-limits exporter* and the Kubernetes Prometheus stack:
 
 ```bash
-export GITHUB_ACCOUNT=your_account
-export GITHUB_AUTH_TYPE=app
-export GITHUB_APP_ID=12345
-export GITHUB_APP_INSTALLATION_ID=123456
-export GITHUB_APP_SRC_PRIVATE_KEY_PATH=/ws/private_key.pem
-helmfile -f kubernetes/helmfile.yml sync
+devbox run --env-file .env start-monitor
 ```
 
 ### Cleanup/teardown the workloads
 
 ```bash
-helmfile -f kubernetes/helmfile.yml destroy
+devbox run --env-file .env stop-monitor
+```
+
+```bash
+devbox run stop-cluster
 ```
 
 ## Other Projects
