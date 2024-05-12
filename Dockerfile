@@ -25,6 +25,13 @@ RUN --mount=type=cache,target=/root/.cache/ \
 
 FROM python:3.11.9-slim AS run
 
+RUN apt-get update && \
+    apt-get install -y \
+    --only-upgrade \
+    --no-install-recommends \
+    libc-bin=2.36-9+deb12u7 && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
 COPY --from=build-env /opt/venv /opt/venv
 
 WORKDIR /app
