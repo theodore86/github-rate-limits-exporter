@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.3
-FROM python:3.11.8-slim AS build
+FROM python:3.11.9-slim AS build
 
 RUN python3 -m venv /opt/venv
 
@@ -23,7 +23,14 @@ RUN --mount=type=cache,target=/root/.cache/ \
       python3 -m pip install -U setuptools==${PYTHON_SETUPTOOLS_VERSION} && \
       python3 -m pip install -r requirements.txt
 
-FROM python:3.11.8-slim AS run
+FROM python:3.11.9-slim AS run
+
+RUN apt-get update && \
+    apt-get install -y \
+    --only-upgrade \
+    --no-install-recommends \
+    libc-bin=2.36-9+deb12u7 && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 COPY --from=build-env /opt/venv /opt/venv
 

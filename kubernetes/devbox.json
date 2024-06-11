@@ -1,0 +1,26 @@
+{
+    "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.4/.schema/devbox.schema.json",
+    "packages": [
+        "kubectl@1.25.3",
+        "kubernetes-helm@3.13.2",
+        "kind@0.20.0",
+        "docker@24.0.5",
+        "helmfile@0.158.1"
+    ],
+    "shell": {
+      "scripts": {
+        "start-cluster": [
+          "kind create cluster --name monitor --config kind.yml"
+        ],
+        "start-monitor": [
+          "helmfile -f helmfile.yml sync"
+        ],
+        "stop-monitor": [
+          "helmfile -f helmfile.yml destroy"
+        ],
+        "stop-cluster": [
+          "kind delete cluster --name monitor"
+        ]
+      }
+    }
+} 
