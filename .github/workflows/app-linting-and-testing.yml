@@ -16,7 +16,7 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     steps:
       - name: "Checkout source code"
-        uses: "actions/checkout@v4.1.4"
+        uses: "actions/checkout@v4.1.7"
 
       - name: "Set up Python ${{ matrix.python-version }}"
         uses: "actions/setup-python@v5.1.0"
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout source code"
-        uses: "actions/checkout@v4.1.4"
+        uses: "actions/checkout@v4.1.7"
 
       - name: "Run Hadolint"
         uses: "hadolint/hadolint-action@v3.1.0"
@@ -42,7 +42,7 @@ jobs:
           failure-threshold: error
 
       - name: "Run Trivys"
-        uses: "aquasecurity/trivy-action@0.20.0"
+        uses: "aquasecurity/trivy-action@0.21.0"
         with:
           scan-type: fs
           scan-ref: Dockerfile
