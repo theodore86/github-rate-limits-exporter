@@ -25,7 +25,7 @@ jobs:
           pip3 install tox
 
       - name: "Static code analysis, testing,..."
-        run: tox
+        run: tox -p --parallel-no-spinner
 
   dockerfile_linting:
     runs-on: ubuntu-latest
