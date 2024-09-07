@@ -1,8 +1,8 @@
 {
     "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.4/.schema/devbox.schema.json",
     "packages": [
-        "kubectl@1.25.3",
-        "kubernetes-helm@3.13.2",
+        "kubectl@1.26.3",
+        "kubernetes-helm@3.15.4",
         "kind@0.20.0",
         "docker@24.0.5",
         "helmfile@0.158.1"
