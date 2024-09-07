@@ -7,3 +7,4 @@ pytest-mock==3.14.0; python_version > "3.7"
 allure-pytest==2.13.5
 iso8601==2.1.0
 pytest-freezegun==0.4.2
+setuptools>=70.0.0; python_version >= "3.12"
