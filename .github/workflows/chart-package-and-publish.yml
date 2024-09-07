@@ -12,7 +12,7 @@ env:
   GITHUB_APP_ID: "${{ secrets.APP_ID }}"
   GITHUB_APP_PRIVATE_KEY: "${{ secrets.APP_PRIVATE_KEY }}"
   CHART_NAME: "github-rate-limits-exporter"
-  HELM_VERSION: "v3.11.1"
+  HELM_VERSION: "v3.15.4"
   YQ_VERSION: "v4.28.1"
 
 jobs:

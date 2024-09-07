@@ -145,97 +145,135 @@
         }
       }
     },
-    "kubectl@1.25.3": {
-      "last_modified": "2022-11-10T13:14:32Z",
-      "resolved": "github:NixOS/nixpkgs/72d8853228c9758820c39b8659415b6d89279493#kubectl",
+    "kubectl@1.26.3": {
+      "last_modified": "2023-03-28T10:29:13Z",
+      "resolved": "github:NixOS/nixpkgs/98f3b08f58ff125ef02d55cd52a83f44f245f2ea#kubectl",
       "source": "devbox-search",
-      "version": "1.25.3",
-      "systems": {
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/y0z32h1k75x91yfawn4nkkb17xf7yb4c-kubectl-1.25.3",
-              "default": true
-            },
-            {
-              "name": "man",
-              "path": "/nix/store/y0r0c7xr8svngvig4c6p8rvwb9rcyq4f-kubectl-1.25.3-man",
-              "default": true
-            },
-            {
-              "name": "convert",
-              "path": "/nix/store/5pgf3flgm2y0q5gn6m8qw5gkpn2mxls6-kubectl-1.25.3-convert"
-            }
-          ],
-          "store_path": "/nix/store/y0z32h1k75x91yfawn4nkkb17xf7yb4c-kubectl-1.25.3"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/c2s4295wlbfax2njfm60yr80hbnx4mzp-kubectl-1.25.3",
-              "default": true
-            },
-            {
-              "name": "man",
-              "path": "/nix/store/7nq9f46pxd0p56i43cz5gk3rq7km0nsk-kubectl-1.25.3-man",
-              "default": true
-            },
-            {
-              "name": "convert",
-              "path": "/nix/store/2vnwf48fv0x7kvr42d0wm3kll1agsifc-kubectl-1.25.3-convert"
-            }
-          ],
-          "store_path": "/nix/store/c2s4295wlbfax2njfm60yr80hbnx4mzp-kubectl-1.25.3"
-        }
-      }
-    },
-    "kubernetes-helm@3.13.2": {
-      "last_modified": "2023-12-13T22:54:10Z",
-      "resolved": "github:NixOS/nixpkgs/fd04bea4cbf76f86f244b9e2549fca066db8ddff#kubernetes-helm",
-      "source": "devbox-search",
-      "version": "3.13.2",
+      "version": "1.26.3",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/akxp2d0wvz32q728rxxx5cgnpnyqspas-kubernetes-helm-3.13.2",
+              "path": "/nix/store/qm3s45lnd81xprab9fl4lqhncmsn34z1-kubectl-1.26.3",
               "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/6nkb312q5hljr3kd5laixzi64jj1h0p9-kubectl-1.26.3-man",
+              "default": true
+            },
+            {
+              "name": "convert",
+              "path": "/nix/store/pac0znvnzqiadna7db1zv7i7q7vzn842-kubectl-1.26.3-convert"
             }
           ],
-          "store_path": "/nix/store/akxp2d0wvz32q728rxxx5cgnpnyqspas-kubernetes-helm-3.13.2"
+          "store_path": "/nix/store/qm3s45lnd81xprab9fl4lqhncmsn34z1-kubectl-1.26.3"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/lfjyakv7gh7wbhndy781p0wpw4w9k8d1-kubernetes-helm-3.13.2",
+              "path": "/nix/store/xl9pg58373mx6s35ng43ymq2ssn8p1r7-kubectl-1.26.3",
               "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/0lxlr8a4jskckzi5qwjwayl6wqwfcff2-kubectl-1.26.3-man",
+              "default": true
+            },
+            {
+              "name": "convert",
+              "path": "/nix/store/hj94rf2274ni6v2j0nzg0l9mv6rkbjmn-kubectl-1.26.3-convert"
             }
           ],
-          "store_path": "/nix/store/lfjyakv7gh7wbhndy781p0wpw4w9k8d1-kubernetes-helm-3.13.2"
+          "store_path": "/nix/store/xl9pg58373mx6s35ng43ymq2ssn8p1r7-kubectl-1.26.3"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/gc6c5pa31lc04f5vqnrxzimkwn78lpvc-kubernetes-helm-3.13.2",
+              "path": "/nix/store/10mf3ym7zbqhxi95mfgid8g1q9vq74wm-kubectl-1.26.3",
               "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/8wxz8gj3rjjcq8wmrncaiyvjfyrdkgn6-kubectl-1.26.3-man",
+              "default": true
+            },
+            {
+              "name": "convert",
+              "path": "/nix/store/j52fgal796sck2w56474fhqkb44ijly5-kubectl-1.26.3-convert"
             }
           ],
-          "store_path": "/nix/store/gc6c5pa31lc04f5vqnrxzimkwn78lpvc-kubernetes-helm-3.13.2"
+          "store_path": "/nix/store/10mf3ym7zbqhxi95mfgid8g1q9vq74wm-kubectl-1.26.3"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/vqlxmnn5yw1671h9xgy5ml180x6z7vlc-kubernetes-helm-3.13.2",
+              "path": "/nix/store/383vvhj3vrnh3nldqcgrv0n0yq0r2jx6-kubectl-1.26.3",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/xpw5md7yrdnbsa79dk2iqgj12f7lrwqb-kubectl-1.26.3-man",
+              "default": true
+            },
+            {
+              "name": "convert",
+              "path": "/nix/store/d410a2cycifp1mpj9z8p5f2fgwz4wsgs-kubectl-1.26.3-convert"
+            }
+          ],
+          "store_path": "/nix/store/383vvhj3vrnh3nldqcgrv0n0yq0r2jx6-kubectl-1.26.3"
+        }
+      }
+    },
+    "kubernetes-helm@3.15.4": {
+      "last_modified": "2024-08-31T10:12:23Z",
+      "resolved": "github:NixOS/nixpkgs/5629520edecb69630a3f4d17d3d33fc96c13f6fe#kubernetes-helm",
+      "source": "devbox-search",
+      "version": "3.15.4",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/l0kxgyk3lbb5m1nn3j4d9yv9n4dm2xv3-kubernetes-helm-3.15.4",
               "default": true
             }
           ],
-          "store_path": "/nix/store/vqlxmnn5yw1671h9xgy5ml180x6z7vlc-kubernetes-helm-3.13.2"
+          "store_path": "/nix/store/l0kxgyk3lbb5m1nn3j4d9yv9n4dm2xv3-kubernetes-helm-3.15.4"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/4c83c3sdpdx9kwfz7ac8pq8gc9bzc1ai-kubernetes-helm-3.15.4",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/4c83c3sdpdx9kwfz7ac8pq8gc9bzc1ai-kubernetes-helm-3.15.4"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mh6n7hjjb3i01cx44hgggryyskbn8mrj-kubernetes-helm-3.15.4",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mh6n7hjjb3i01cx44hgggryyskbn8mrj-kubernetes-helm-3.15.4"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ii5025malv11pzdf55aw819hzmph3dr8-kubernetes-helm-3.15.4",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ii5025malv11pzdf55aw819hzmph3dr8-kubernetes-helm-3.15.4"
         }
       }
     }

@@ -1,15 +1,13 @@
 # syntax = docker/dockerfile:1.9
-FROM python:3.11.9-slim AS base
+FROM python:3.12.5-slim AS base
 
 ARG PIP_DISABLE_PIP_VERSION_CHECK=1
 ARG PIP_NO_COMPILE=1
 ENV PYTHONFAULTHANDLER=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHON_PIP_VERSION=24.0.0
-ENV PYTHON_SETUPTOOLS_VERSION=70.0.0
 
-RUN python3 -m pip install -U pip=="${PYTHON_PIP_VERSION}" && \
-    python3 -m pip install -U setuptools=="${PYTHON_SETUPTOOLS_VERSION}"
+RUN python3 -m pip install -U pip=="${PYTHON_PIP_VERSION}"
 
 FROM base AS build-env
 
@@ -23,8 +21,7 @@ COPY ./requirements.txt ./
 
 # Buildkits caching
 RUN --mount=type=cache,target=/root/.cache/ \
-      python3 -m pip install -r requirements.txt && \
-      python3 -m pip install -U setuptools=="${PYTHON_SETUPTOOLS_VERSION}"
+      python3 -m pip install -r requirements.txt
 
 FROM base AS run
 

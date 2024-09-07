@@ -4,16 +4,13 @@ name: App Linting And Testing
 on:
   workflow_call:
 
-env:
-  TOX_VERSION: "3.28.0"
-
 jobs:
   python_linting_and_testing:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
       - name: "Checkout source code"
         uses: "actions/checkout@v4.1.7"
@@ -25,7 +22,7 @@ jobs:
 
       - name: "Install tox automation tool"
         run: |
-          pip3 install tox==${{ env.TOX_VERSION }}
+          pip3 install tox
 
       - name: "Static code analysis, testing,..."
         run: tox
