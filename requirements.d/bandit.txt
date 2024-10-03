@@ -1,4 +1,4 @@
 # Requirements for [testenv:bandit] virtualenv
 
 bandit==1.7.5; python_version <= "3.7"
-bandit==1.7.9; python_version > "3.7"
+bandit==1.7.10; python_version > "3.7"
