@@ -26,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout SCM"
-        uses: "actions/checkout@v4.2.0"
+        uses: "actions/checkout@v4.2.1"
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.6.1
+        uses: docker/setup-buildx-action@v3.7.1
 
       - name: "Login to docker registry"
         if: github.ref_type == 'tag'
@@ -91,7 +91,7 @@ jobs:
             -wait-retry-interval ${{ env.DOCKER_GITHUB_RL_INTERVAL }}
 
       - name: "Run Trivy vulnerability scanner on docker container image"
-        uses: "aquasecurity/trivy-action@0.24.0"
+        uses: "aquasecurity/trivy-action@0.26.0"
         with:
           image-ref: "${{ env.DOCKERHUB_NAMESPACE }}:${{ env.DOCKER_TAG }}"
           exit-code: "1"
