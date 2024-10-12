@@ -51,7 +51,7 @@ jobs:
           echo "DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: "Build the docker container image"
-        uses: "docker/build-push-action@v6.8.0"
+        uses: "docker/build-push-action@v6.9.0"
         with:
           context: .
           load: true
@@ -91,7 +91,7 @@ jobs:
             -wait-retry-interval ${{ env.DOCKER_GITHUB_RL_INTERVAL }}
 
       - name: "Run Trivy vulnerability scanner on docker container image"
-        uses: "aquasecurity/trivy-action@0.26.0"
+        uses: "aquasecurity/trivy-action@0.27.0"
         with:
           image-ref: "${{ env.DOCKERHUB_NAMESPACE }}:${{ env.DOCKER_TAG }}"
           exit-code: "1"
@@ -99,7 +99,7 @@ jobs:
           severity: "HIGH,CRITICAL"
 
       - name: "Push the docker container image"
-        uses: "docker/build-push-action@v6.8.0"
+        uses: "docker/build-push-action@v6.9.0"
         with:
           push: ${{ github.ref_type == 'tag' }}
           context: .
