@@ -25,12 +25,10 @@ CLASSIFIERS = """
 Development Status :: 5 - Production/Stable
 Intended Audience :: System Administrators
 Topic :: System :: Monitoring
-License :: Other/Proprietary License
 License :: OSI Approved :: MIT License
 Natural Language :: English
 Programming Language :: Python
 Programming Language :: Python :: 3
-Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
 Programming Language :: Python :: 3.9
 Programming Language :: Python :: 3.10
@@ -43,7 +41,7 @@ setuptools.setup(
     author=PROJECT["__author__"],
     author_email=PROJECT["__author_email__"],
     url=PROJECT["__url__"],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     name=PROJECT["__title__"],
     version=PROJECT["__version__"],
     package_dir={"": "."},
