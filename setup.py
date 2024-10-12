@@ -25,7 +25,6 @@ CLASSIFIERS = """
 Development Status :: 5 - Production/Stable
 Intended Audience :: System Administrators
 Topic :: System :: Monitoring
-License :: Other/Proprietary License
 License :: OSI Approved :: MIT License
 Natural Language :: English
 Programming Language :: Python
