@@ -1,4 +1,4 @@
 # Requirements for [testenv:mypy] virtualenv
 
 mypy==1.11.2
-types-requests==2.32.0.20240914
+types-requests==2.32.0.20241016
