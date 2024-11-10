@@ -5,7 +5,8 @@ FROM python:3.12.6-slim AS base
 RUN apt-get update && \
     apt-get install -y \
     --no-install-recommends \
-    libexpat1=2.5.0-1+deb12u1 && \
+    libexpat1=2.5.0-1+deb12u1 \
+    libsqlite3-0=3.40.1-2+deb12u1 && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 ARG PIP_DISABLE_PIP_VERSION_CHECK=1
