@@ -1,3 +1,3 @@
 # Requirements for [testenv:ipython] virtualenv
 
-ipython==8.29.0
+ipython==8.30.0
