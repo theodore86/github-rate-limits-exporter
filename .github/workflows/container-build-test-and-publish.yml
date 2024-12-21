@@ -82,7 +82,7 @@ jobs:
       - name: "Test container - Execute http client on metrics endpoint"
         uses: "addnab/docker-run-action@v3"
         with:
-          image: "jwilder/dockerize"
+          image: "jwilder/dockerize:0.6.1"
           docker_network: "${{ env.DOCKER_NETWORK }}"
           run: >
             dockerize
