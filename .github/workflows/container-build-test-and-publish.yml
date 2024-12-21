@@ -29,7 +29,7 @@ jobs:
         uses: "actions/checkout@v4.2.2"
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.7.1
+        uses: docker/setup-buildx-action@v3.8.0
 
       - name: "Login to docker registry"
         if: github.ref_type == 'tag'
@@ -82,7 +82,7 @@ jobs:
       - name: "Test container - Execute http client on metrics endpoint"
         uses: "addnab/docker-run-action@v3"
         with:
-          image: "jwilder/dockerize"
+          image: "jwilder/dockerize:0.6.1"
           docker_network: "${{ env.DOCKER_NETWORK }}"
           run: >
             dockerize
