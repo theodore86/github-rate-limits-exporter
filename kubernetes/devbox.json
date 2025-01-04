@@ -13,7 +13,7 @@
           "kind create cluster --name monitor --config kind.yml"
         ],
         "start-monitor": [
-          "helmfile -f helmfile.yml sync"
+          "helmfile deps -f helmfile.yml && helmfile -f helmfile.yml sync"
         ],
         "stop-monitor": [
           "helmfile -f helmfile.yml destroy"

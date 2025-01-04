@@ -13,7 +13,7 @@ releases:
   - name: kube-prometheus-stack
     namespace: monitoring
     chart: "prometheus-community/kube-prometheus-stack"
-    version: "45.7.1"
+    version: "67.7.0"
     values:
       - defaultRules:
           create: false
