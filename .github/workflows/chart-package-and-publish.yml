@@ -77,7 +77,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: "chore: bump helm charts to version: ${{ steps.package_version.outputs.VERSION }}"
           base: main
-          branch: "${{ github.ref_name }}-main-release"
+          branch: "${{ github.ref_name }}-chart-main-release"
           labels: |
             helm
             release
