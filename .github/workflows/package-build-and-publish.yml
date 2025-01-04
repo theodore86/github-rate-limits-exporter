@@ -69,7 +69,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: "chore: update package version file to: ${{ github.ref_name }}"
           base: main
-          branch: "${{ github.ref_name }}-main-release"
+          branch: "${{ github.ref_name }}-python-main-release"
           labels: |
             python
             release
