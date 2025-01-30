@@ -39,7 +39,7 @@ jobs:
           version: "${{ env.HELM_VERSION }}"
 
       - name: "Set up Python"
-        uses: "actions/setup-python@v5.3.0"
+        uses: "actions/setup-python@v5.4.0"
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
 
