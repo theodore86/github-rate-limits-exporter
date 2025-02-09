@@ -1,8 +1,8 @@
 """
-    github_rate_limits_exporter.utils
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+github_rate_limits_exporter.utils
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Prometheus exporter utilities/helper functions.
+Prometheus exporter utilities/helper functions.
 """
 
 import base64

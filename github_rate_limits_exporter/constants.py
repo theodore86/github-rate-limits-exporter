@@ -1,8 +1,8 @@
 """
-    github_rate_limits_exporter.constants
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+github_rate_limits_exporter.constants
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Prometheus exporter constant variables.
+Prometheus exporter constant variables.
 """
 
 import logging

@@ -1,8 +1,7 @@
-""" github_rate_limits_exporter packaging """
+"""github_rate_limits_exporter packaging"""
 
 from os.path import dirname, join, realpath
 import setuptools
-
 
 CUR_DIR = dirname(realpath(__file__))
 VERSION_FILE = join(CUR_DIR, "github_rate_limits_exporter", "_version.py")

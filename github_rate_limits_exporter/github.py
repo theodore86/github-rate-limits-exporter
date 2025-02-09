@@ -1,20 +1,20 @@
 """
-    github_rate_limits_exporter.github
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+github_rate_limits_exporter.github
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Github authentication using:
+Github authentication using:
 
-      - GithubApp (Installation Access Token)
-      - Personal Access Token (PAT)
+  - GithubApp (Installation Access Token)
+  - Personal Access Token (PAT)
 
-    To aquire access token from GithubApp:
+To aquire access token from GithubApp:
 
-        - Application ID.
-        - Private key (PEM format).
-        - Installation ID.
+    - Application ID.
+    - Private key (PEM format).
+    - Installation ID.
 
-    - PAT access token lifetime is defined by the user.
-    - IAT access token (GithubApp) lifetime is at 1 hour.
+- PAT access token lifetime is defined by the user.
+- IAT access token (GithubApp) lifetime is at 1 hour.
 """
 
 import argparse

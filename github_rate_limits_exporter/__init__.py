@@ -1,16 +1,16 @@
 """
-    github_rate_limits_exporter
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+github_rate_limits_exporter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Prometheus Github REST API Rate Limits exporter.
-    Supports the following Github authentication methods:
+Prometheus Github REST API Rate Limits exporter.
+Supports the following Github authentication methods:
 
-        - PAT (Personal Access Token) requires:
-          - GITHUB_TOKEN
-        - APP (as a Github Application) requires:
-          - GITHUB_APP_ID
-          - GITHUB_INSTALLATION_ID
-          - GITHUB_PRIVATE_KEY_PATH
+    - PAT (Personal Access Token) requires:
+      - GITHUB_TOKEN
+    - APP (as a Github Application) requires:
+      - GITHUB_APP_ID
+      - GITHUB_INSTALLATION_ID
+      - GITHUB_PRIVATE_KEY_PATH
 """
 
 import logging
