@@ -1,12 +1,12 @@
 """
-    github_rate_limits_exporter.collector
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+github_rate_limits_exporter.collector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Prometheus exporter or custom collector,
-    collects the github rate-limits per API.
+Prometheus exporter or custom collector,
+collects the github rate-limits per API.
 
-    The collector is registered with the prometheus client
-    when the exporter starts up.
+The collector is registered with the prometheus client
+when the exporter starts up.
 """
 
 import argparse

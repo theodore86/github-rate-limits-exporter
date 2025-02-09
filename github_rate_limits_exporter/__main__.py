@@ -1,8 +1,8 @@
 """
-    github_rate_limits_exporter.__main__
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+github_rate_limits_exporter.__main__
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Main entry point for ``python -m github_rate_limits_exporter``.
+Main entry point for ``python -m github_rate_limits_exporter``.
 """
 
 import sys
