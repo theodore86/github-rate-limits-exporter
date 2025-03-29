@@ -1,8 +1,8 @@
 """
-    github_rate_limits_exporter.exceptions
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+github_rate_limits_exporter.exceptions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Prometheus exporter custom exceptions.
+Prometheus exporter custom exceptions.
 """
 
 from github import GithubException

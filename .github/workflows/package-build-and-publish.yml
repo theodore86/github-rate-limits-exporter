@@ -23,7 +23,7 @@ jobs:
         uses: "actions/checkout@v4.2.2"
 
       - name: "Set up Python"
-        uses: "actions/setup-python@v5.4.0"
+        uses: "actions/setup-python@v5.5.0"
         with:
           python-version: "3.12"
 
@@ -64,7 +64,7 @@ jobs:
           time: 1m
 
       - name: "Create PR for release version file"
-        uses: "peter-evans/create-pull-request@v7.0.6"
+        uses: "peter-evans/create-pull-request@v7.0.8"
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: "chore: update package version file to: ${{ github.ref_name }}"
@@ -89,7 +89,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: "actions/setup-python@v5.4.0"
+        uses: "actions/setup-python@v5.5.0"
         with:
           python-version: ${{ matrix.python-version }}
 

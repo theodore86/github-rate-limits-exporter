@@ -1,8 +1,8 @@
 """
-    github_rate_limits_exporter._version
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+github_rate_limits_exporter._version
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Prometheus exporter metadata.
+Prometheus exporter metadata.
 """
 
 __title__ = "github_rate_limits_exporter"
