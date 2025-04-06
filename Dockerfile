@@ -1,12 +1,11 @@
 # syntax = docker/dockerfile:1.9
-FROM python:3.12.6-slim AS base
+FROM python:3.12.7-slim AS base
 
 # CVE-2024-454[90-91-92]
 RUN apt-get update && \
     apt-get install -y \
     --no-install-recommends \
-    libexpat1=2.5.0-1+deb12u1 \
-    libsqlite3-0=3.40.1-2+deb12u1 && \
+    liblzma5=5.4.1-1 && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 ARG PIP_DISABLE_PIP_VERSION_CHECK=1
