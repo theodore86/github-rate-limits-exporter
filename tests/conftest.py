@@ -216,7 +216,6 @@ def install_auth():
                 "expires_at": expires_at,
                 "on_behalf_of": "exporter",
             },
-            completed=True,
         )
 
     return auth
