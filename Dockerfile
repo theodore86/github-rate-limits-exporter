@@ -1,12 +1,5 @@
 # syntax = docker/dockerfile:1.9
-FROM python:3.12.7-slim AS base
-
-# CVE-2024-454[90-91-92]
-RUN apt-get update && \
-    apt-get install -y \
-    --no-install-recommends \
-    liblzma5=5.4.1-1 && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+FROM python:3.12.10-slim AS base
 
 ARG PIP_DISABLE_PIP_VERSION_CHECK=1
 ARG PIP_NO_COMPILE=1
@@ -24,10 +17,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 WORKDIR /
 
-COPY ./requirements.txt ./
-
 # Buildkits caching
 RUN --mount=type=cache,target=/root/.cache/ \
+    --mount=type=bind,source=requirements.txt,target=requirements.txt \
       python3 -m pip install -r requirements.txt
 
 FROM base AS run
