@@ -51,11 +51,13 @@ jobs:
           echo "DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: "Build the docker container image"
-        uses: "docker/build-push-action@v6.15.0"
+        uses: "docker/build-push-action@v6.16.0"
         with:
           context: .
           load: true
           file: Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: |
             ${{ env.DOCKERHUB_NAMESPACE }}:${{ env.DOCKER_TAG }}
 
@@ -99,7 +101,7 @@ jobs:
           severity: "HIGH,CRITICAL"
 
       - name: "Push the docker container image"
-        uses: "docker/build-push-action@v6.15.0"
+        uses: "docker/build-push-action@v6.16.0"
         with:
           push: ${{ github.ref_type == 'tag' }}
           context: .
