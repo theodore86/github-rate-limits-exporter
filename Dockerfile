@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.9
-FROM python:3.12.10-slim AS base
+FROM python:3.13.3-slim AS base
 
 ARG PIP_DISABLE_PIP_VERSION_CHECK=1
 ARG PIP_NO_COMPILE=1
