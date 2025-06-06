@@ -1,4 +1,4 @@
 # Requirements for [testenv:ipython] virtualenv
 
 ipython==8.36.0; python_version < "3.11"
-ipython==9.2.0; python_version >= "3.11"
+ipython==9.3.0; python_version >= "3.11"
