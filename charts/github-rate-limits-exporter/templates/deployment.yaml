@@ -92,6 +92,9 @@ spec:
             httpGet:
               path: /metrics
               port: metrics
+          livenessProbe:
+            tcpSocket:
+              port: metrics
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- if eq (lower (.Values.exporter.github.authType | default "")) "app" }}
