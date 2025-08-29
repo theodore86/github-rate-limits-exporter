@@ -28,6 +28,9 @@ jobs:
       - name: "Checkout SCM"
         uses: "actions/checkout@v5.0.0"
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.11.1
 
@@ -54,6 +57,7 @@ jobs:
         uses: "docker/build-push-action@v6.18.0"
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           load: true
           file: Dockerfile
           cache-from: type=gha
@@ -103,6 +107,7 @@ jobs:
       - name: "Push the docker container image"
         uses: "docker/build-push-action@v6.18.0"
         with:
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.ref_type == 'tag' }}
           context: .
           file: Dockerfile
