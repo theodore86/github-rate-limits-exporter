@@ -23,7 +23,10 @@ jobs:
 
   build_test_and_publish_docker_image:
     needs: ["app_linting_and_testing"]
-    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        arch: [amd64, arm64]
+    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-22.04-arm' || 'ubuntu-latest' }}
     steps:
       - name: "Checkout SCM"
         uses: "actions/checkout@v5.0.0"
@@ -74,6 +77,7 @@ jobs:
           docker_network: "${{ env.DOCKER_NETWORK }}"
           options: >
             --detach
+            --platform linux/${{ matrix.arch }}
             -e GITHUB_ACCOUNT=${{ env.DOCKER_GITHUB_RL_NAME }}
             -e GITHUB_AUTH_TYPE=pat
             -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
@@ -86,6 +90,8 @@ jobs:
         with:
           image: "jwilder/dockerize:0.6.1"
           docker_network: "${{ env.DOCKER_NETWORK }}"
+          options: >
+            --platform linux/${{ matrix.arch }}
           run: >
             dockerize
             -wait http://${{ env.DOCKER_GITHUB_RL_NAME }}:${{ env.DOCKER_GITHUB_RL_PORT }}/metrics
@@ -107,5 +113,5 @@ jobs:
           context: .
           file: Dockerfile
           tags: |
-            ${{ env.DOCKERHUB_REPO }}/${{ env.DOCKERHUB_NAMESPACE }}:${{ env.DOCKER_TAG }}
-            ${{ env.DOCKERHUB_REPO }}/${{ env.DOCKERHUB_NAMESPACE }}:latest
+            ${{ env.DOCKERHUB_REPO }}/${{ env.DOCKERHUB_NAMESPACE }}:${{ env.DOCKER_TAG }}-${{ matrix.arch }}
+            ${{ env.DOCKERHUB_REPO }}/${{ env.DOCKERHUB_NAMESPACE }}:latest-${{ matrix.arch }}
