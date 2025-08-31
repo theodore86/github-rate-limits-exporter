@@ -57,7 +57,6 @@ jobs:
         uses: "docker/build-push-action@v6.18.0"
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
           load: true
           file: Dockerfile
           cache-from: type=gha
@@ -104,7 +103,7 @@ jobs:
           ignore-unfixed: true
           severity: "HIGH,CRITICAL"
 
-      - name: "Push the docker container image"
+      - name: "Build and push multi-arch docker image"
         uses: "docker/build-push-action@v6.18.0"
         with:
           platforms: linux/amd64,linux/arm64
