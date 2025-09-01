@@ -229,6 +229,11 @@ tests:
               httpGet:
                 path: /metrics
                 port: metrics
+              initialDelaySeconds: 10
+            livenessProbe:
+              tcpSocket:
+                port: metrics
+              initialDelaySeconds: 10
             resources:
               requests:
                 cpu: 100m
