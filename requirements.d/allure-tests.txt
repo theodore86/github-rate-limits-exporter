@@ -1,7 +1,7 @@
 # Requirements for [testenv:allure-tests] virtualenv
 
 pytest==8.4.2
-pytest-mock==3.14.0
+pytest-mock==3.15.1
 allure-pytest==2.15.0
 iso8601==2.1.0
 pytest-freezegun==0.4.2
