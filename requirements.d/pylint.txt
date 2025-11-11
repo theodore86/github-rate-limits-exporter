@@ -1,5 +1,5 @@
 # Requirements for [testenv:pylint] virtualenv
 
 pylint==3.2.7; python_version == "3.8"
-pylint==3.3.9; python_version > "3.8"
+pylint==4.0.2; python_version > "3.8"
 setuptools>=70.0.0; python_version >= "3.12"
