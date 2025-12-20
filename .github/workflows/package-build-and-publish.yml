@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout SCM"
-        uses: "actions/checkout@v5.0.0"
+        uses: "actions/checkout@v6.0.1"
 
       - name: "Set up Python"
         uses: "actions/setup-python@v6.0.0"
@@ -64,7 +64,7 @@ jobs:
           time: 1m
 
       - name: "Create PR for release version file"
-        uses: "peter-evans/create-pull-request@v7.0.8"
+        uses: "peter-evans/create-pull-request@v8.0.0"
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: "chore: update package version file to: ${{ github.ref_name }}"
@@ -86,7 +86,7 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v6.0.1
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: "actions/setup-python@v6.0.0"
