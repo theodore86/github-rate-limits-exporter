@@ -1,4 +1,5 @@
 # Requirements for [testenv:isort] virtualenv
 
 isort==5.13.2; python_version == "3.8"
-isort==6.1.0; python_version >= "3.9"
+isort==6.1.0; python_version == "3.9"
+isort==7.0.0; python_version > "3.9"
