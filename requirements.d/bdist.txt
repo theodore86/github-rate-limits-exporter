@@ -1,6 +1,6 @@
 # Requirements for [testenv:bdist] virtualenv
 
-build==1.2.2
+build==1.4.0
 twine==6.2.0
 check-wheel-contents==0.6.3
 setuptools>=70.0.0; python_version >= "3.12"
