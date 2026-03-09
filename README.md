@@ -2,6 +2,7 @@
 
 [![Charts CI](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/chart-linting-and-testing.yml//badge.svg)](https://github.com/theodore86/github-rate-limits-exporter/actions/workflows/chart-linting-and-testing.yml)
 [![PyPI version](https://badge.fury.io/py/github-rate-limits-exporter.svg)](https://badge.fury.io/py/github-rate-limits-exporter)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/github-rate-limits-exporter.svg?label=Downloads%20per%20month&color=blue)](https://pypi.org/project/github-rate-limits-exporter)
 [![Python version](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)](https://img.shields.io/pypi/pyversions/github-rate-limits-exporter.svg)
 ![license](https://img.shields.io/github/license/theodore86/github-rate-limits-exporter)
 
