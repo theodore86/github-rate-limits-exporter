@@ -1,4 +1,5 @@
-cryptography==47.0.0
+cryptography==47.0.0; python_version == "3.8"
+cryptography==48.0.0; python_version >= "3.9"
 PyGithub==2.8.1; python_version == "3.8"
 PyGithub==2.9.0; python_version >= "3.9"
 prometheus-client==0.21.1; python_version == "3.8"
