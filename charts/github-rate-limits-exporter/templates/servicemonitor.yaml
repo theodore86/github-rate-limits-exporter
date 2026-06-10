@@ -6,6 +6,9 @@ metadata:
   name: {{ template "github-rate-limits-exporter.fullname" . }}
   labels:
     {{- include "github-rate-limits-exporter.labels" . | nindent 4 }}
+    {{- with .Values.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- if .Values.serviceMonitor.annotations }}
   annotations:
     {{- toYaml .Values.serviceMonitor.annotations | nindent 4 }}

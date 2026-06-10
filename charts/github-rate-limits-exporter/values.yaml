@@ -26,6 +26,14 @@ exporter:
   # For Github Enterprise Server, set baseUrl to the GHE API endpoint, e.g.:
   #   baseUrl: "https://github.example.com/api/v3"
   # Defaults to public github.com (https://api.github.com) when unset.
+  #
+  # For Github Enterprise instances using a private/corporate CA, provide the
+  # CA bundle in PEM format. The chart will create a ConfigMap, mount it at
+  # /etc/ssl/certs/custom-ca.crt and set REQUESTS_CA_BUNDLE so PyGithub trusts it:
+  #   caBundle: |
+  #     -----BEGIN CERTIFICATE-----
+  #     ...
+  #     -----END CERTIFICATE-----
   github: {}
 service:
   clusterIP: ""
@@ -38,6 +46,7 @@ imagePullSecrets: []
 serviceMonitor:
   enabled: false
   annotations: {}
+  labels: {}
 # Liveness and readiness probes for the exporter container.
 # The readiness probe scrapes the same /metrics endpoint Prometheus does,
 # which means every probe causes a real Github API rate-limit call. For
