@@ -22,6 +22,10 @@ exporter:
   #   mountPath: /secret
   #   privateKey: |
   #   ""
+  #
+  # For Github Enterprise Server, set baseUrl to the GHE API endpoint, e.g.:
+  #   baseUrl: "https://github.example.com/api/v3"
+  # Defaults to public github.com (https://api.github.com) when unset.
   github: {}
 service:
   clusterIP: ""

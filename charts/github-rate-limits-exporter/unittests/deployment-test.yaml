@@ -323,3 +323,39 @@ tests:
           path: spec.template.spec.containers[0].readinessProbe
       - isNull:
           path: spec.template.spec.containers[0].livenessProbe
+  - it: tests authtype pat with github enterprise baseUrl
+    template: deployment.yaml
+    set:
+      fullnameOverride: gh-rl-exporter
+      exporter:
+        github:
+          accountName: theodore86
+          authType: pat
+          token: 8rfdgf834343fgfvd
+          baseUrl: https://github.example.com/api/v3
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GITHUB_BASE_URL
+            value: https://github.example.com/api/v3
+  - it: tests authtype app with github enterprise baseUrl
+    template: deployment.yaml
+    set:
+      fullnameOverride: gh-rl-exporter
+      exporter:
+        github:
+          accountName: theodore86
+          authType: app
+          appID: "1234567"
+          installationID: "12345678"
+          mountPath: /secret
+          privateKey: |
+            myprivatekey
+          baseUrl: https://github.example.com/api/v3
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GITHUB_BASE_URL
+            value: https://github.example.com/api/v3

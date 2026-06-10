@@ -138,6 +138,7 @@ def collector(private_key_str, exception_queue):
             github_app_id=11112222,
             github_app_installation_id=12345678,
             github_app_private_key_path=private_key_str,
+            github_base_url="https://api.github.com",
         ),
         exception_queue,
     )
@@ -201,6 +202,7 @@ def github_app_requester(private_key_str):
             github_app_id=123123,
             github_app_private_key_path=private_key_str,
             github_app_installation_id=11112222,
+            github_base_url="https://api.github.com",
         )
     )
 
@@ -210,7 +212,11 @@ def github_pat_requester(freezer):
     """Returns a PAT GithubRateLimitsRequester instance"""
     freezer.move_to(CURRENT_TIME)
     return GithubRateLimitsRequester(
-        argparse.Namespace(github_auth_type="pat", github_token="some-value")
+        argparse.Namespace(
+            github_auth_type="pat",
+            github_token="some-value",
+            github_base_url="https://api.github.com",
+        )
     )
 
 

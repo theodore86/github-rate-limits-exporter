@@ -4,7 +4,11 @@ from datetime import datetime, timezone
 
 import pytest
 
-from github_rate_limits_exporter.github import GithubApp, GithubToken
+from github_rate_limits_exporter.github import (
+    GithubApp,
+    GithubRateLimitsRequester,
+    GithubToken,
+)
 from tests.utils import (
     CURRENT_TIME,
     MOVE_FORWARD_CURRENT_TIME,
@@ -218,3 +222,53 @@ def test_github_rate_limits_unwraps_resources(
     # And .resources must NOT be a passthrough (i.e. we are not returning
     # the full raw_data)
     assert "resources" not in rate_limits
+
+
+def test_github_rate_limits_requester_pat_uses_base_url(mocker, freezer, private_key_str):
+    freezer.move_to(CURRENT_TIME)
+    github_init = mocker.patch(
+        "github_rate_limits_exporter.github.Github", autospec=True
+    )
+    GithubRateLimitsRequester(
+        Namespace(
+            github_auth_type="pat",
+            github_token="some-value",
+            github_base_url="https://ghe.example.com/api/v3",
+        )
+    )
+    github_init.assert_called_once_with(
+        login_or_token="some-value", base_url="https://ghe.example.com/api/v3"
+    )
+
+
+def test_github_app_uses_base_url(mocker, private_key_str):
+    integration_mock = mocker.patch(
+        "github_rate_limits_exporter.github.GithubIntegration", autospec=True
+    )
+    GithubApp(
+        Namespace(
+            github_app_id=123,
+            github_app_private_key_path=private_key_str,
+            github_app_installation_id=456,
+            github_base_url="https://ghe.example.com/api/v3",
+        )
+    )
+    integration_mock.assert_called_once_with(
+        123, private_key_str, base_url="https://ghe.example.com/api/v3"
+    )
+
+
+def test_github_rate_limits_requester_default_base_url(
+    mocker, freezer, private_key_str
+):
+    """Defaults to public github.com when github_base_url is missing on the namespace."""
+    freezer.move_to(CURRENT_TIME)
+    github_init = mocker.patch(
+        "github_rate_limits_exporter.github.Github", autospec=True
+    )
+    GithubRateLimitsRequester(
+        Namespace(github_auth_type="pat", github_token="some-value")
+    )
+    github_init.assert_called_once_with(
+        login_or_token="some-value", base_url="https://api.github.com"
+    )
