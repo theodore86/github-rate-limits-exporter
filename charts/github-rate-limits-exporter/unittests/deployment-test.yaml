@@ -306,3 +306,20 @@ tests:
                 secretKeyRef:
                   name: gh-rl-exporter
                   key: token
+  - it: probes are rendered by default
+    template: deployment.yaml
+    asserts:
+      - isNotNull:
+          path: spec.template.spec.containers[0].readinessProbe
+      - isNotNull:
+          path: spec.template.spec.containers[0].livenessProbe
+  - it: probes can be disabled
+    template: deployment.yaml
+    set:
+      probes:
+        enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.containers[0].readinessProbe
+      - isNull:
+          path: spec.template.spec.containers[0].livenessProbe
