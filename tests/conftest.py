@@ -71,26 +71,37 @@ def rate_limits_json_path(file_path):
 
 @pytest.fixture(scope="module")
 def rate_limits_json(rate_limits_json_path):
-    """Returns an object of pre-defined rate-limits in JSON format"""
+    """Returns an object of pre-defined rate-limits in JSON format.
+
+    Mirrors the full ``raw_data`` shape returned by PyGithub's
+    ``Github.get_rate_limit().raw_data`` — i.e. the entire ``/rate_limit``
+    response with ``resources`` and ``rate`` keys at the top level.
+    """
     fd = open(rate_limits_json_path, "r", encoding="utf-8")
-    rate_limits = json.loads(fd.read()).get("resources")
+    rate_limits = json.loads(fd.read())
     yield rate_limits
     fd.close()
 
 
 @pytest.fixture(scope="module")
-def rate_limits_json_dotmap(rate_limits_json):
+def rate_limits_resources(rate_limits_json):
+    """Returns the ``resources`` sub-dict — the shape consumed by the collector."""
+    return rate_limits_json["resources"]
+
+
+@pytest.fixture(scope="module")
+def rate_limits_json_dotmap(rate_limits_resources):
     """Returns a dotmap.Dotmap object of the pre-defined rate-limits"""
-    return dotmap.DotMap(rate_limits_json)
+    return dotmap.DotMap(rate_limits_resources)
 
 
 @pytest.fixture
-def github_rate_limits_requester_mock(mocker, rate_limits_json):
+def github_rate_limits_requester_mock(mocker, rate_limits_resources):
     """Returns a Mock object of the GithubRateLimitsRequester.get_rate_limits attribute"""
     return mocker.patch.object(
         GithubRateLimitsRequester,
         "get_rate_limits",
-        return_value=dotmap.DotMap(rate_limits_json),
+        return_value=dotmap.DotMap(rate_limits_resources),
         autospec=True,
     )
 

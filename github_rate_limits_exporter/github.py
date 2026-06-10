@@ -192,12 +192,17 @@ class GithubRateLimitsRequester:
         return GithubToken(token.token, token.expires_at)
 
     def get_rate_limits(self) -> dotmap.DotMap:
-        """Retrieve the Github API rate-limits"""
+        """Retrieve the Github API rate-limits.
+
+        ``RateLimitOverview.raw_data`` returns the full ``/rate_limit``
+        response (``{"resources": {...}, "rate": {...}}``); the collector
+        consumes the per-resource map directly, so unwrap ``resources`` here.
+        """
         if self.token.has_expired():
             logger.debug("Github Token expired at: %s", self.token.expires_at)
             self._refresh_token()
         rate_limits = self._api.get_rate_limit()
-        return dotmap.DotMap(rate_limits.raw_data)
+        return dotmap.DotMap(rate_limits.raw_data["resources"])
 
     def _refresh_token(self) -> None:
         logger.debug("Requesting new Github Token")
