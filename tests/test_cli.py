@@ -122,3 +122,39 @@ def test_github_pat_auth_env_variables(github_env_vars):
     assert args.verbosity == github_env_vars["EXPORTER_LOG_LEVEL"]
     assert args.bind_addr == github_env_vars["EXPORTER_BIND_ADDRESS"]
     assert args.listen_port == int(github_env_vars["EXPORTER_LISTEN_PORT"])
+
+
+def test_github_base_url_default():
+    args = cli.parsecli(
+        ["--github-auth-type", "pat", "--github-token", "tok", "--github-account", "a"]
+    )
+    assert args.github_base_url == "https://api.github.com"
+
+
+def test_github_base_url_cli_argument():
+    args = cli.parsecli(
+        [
+            "--github-auth-type", "pat",
+            "--github-token", "tok",
+            "--github-account", "a",
+            "--github-base-url", "https://github.example.com/api/v3",
+        ]
+    )
+    assert args.github_base_url == "https://github.example.com/api/v3"
+
+
+@pytest.mark.parametrize(
+    "github_env_vars",
+    [
+        {
+            "GITHUB_AUTH_TYPE": "pat",
+            "GITHUB_TOKEN": "token",
+            "GITHUB_ACCOUNT": "test",
+            "GITHUB_BASE_URL": "https://ghe.corp.example.com/api/v3",
+        }
+    ],
+    indirect=True,
+)
+def test_github_base_url_env_variable(github_env_vars):
+    args = cli.parsecli(["--github-auth-type", "pat", "--github-account", "test"])
+    assert args.github_base_url == github_env_vars["GITHUB_BASE_URL"]

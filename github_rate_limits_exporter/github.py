@@ -54,7 +54,10 @@ class GithubApp:
         self.app_id = args.github_app_id
         self.private_key = args.github_app_private_key_path
         self.installation_id = args.github_app_installation_id
-        self._app = GithubIntegration(self.app_id, self.private_key)
+        self._base_url = getattr(args, "github_base_url", "https://api.github.com")
+        self._app = GithubIntegration(
+            self.app_id, self.private_key, base_url=self._base_url
+        )
 
     @property
     def app_id(self) -> int:
@@ -180,8 +183,9 @@ class GithubRateLimitsRequester:
     """
 
     def __init__(self, args: argparse.Namespace) -> None:
+        self._base_url = getattr(args, "github_base_url", "https://api.github.com")
         self.token = self._initialize_token(args)
-        self._api = Github(login_or_token=self.token.token)
+        self._api = Github(login_or_token=self.token.token, base_url=self._base_url)
 
     def _initialize_token(self, args: argparse.Namespace) -> GithubToken:
         logger.debug("Github authentication type: %s", args.github_auth_type)
@@ -208,4 +212,4 @@ class GithubRateLimitsRequester:
         logger.debug("Requesting new Github Token")
         token = self._app.access_token
         self.token = GithubToken(token.token, token.expires_at)
-        self._api = Github(login_or_token=token.token)
+        self._api = Github(login_or_token=token.token, base_url=self._base_url)

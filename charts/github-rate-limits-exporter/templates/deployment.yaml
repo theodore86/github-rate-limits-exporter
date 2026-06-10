@@ -52,6 +52,10 @@ spec:
               value: {{ .Values.exporter.github.authType | lower | quote }}
             - name: EXPORTER_LOG_LEVEL
               value: {{ .Values.exporter.github.logLevel | default 4  | quote }}
+            {{- if .Values.exporter.github.baseUrl }}
+            - name: GITHUB_BASE_URL
+              value: {{ .Values.exporter.github.baseUrl | quote }}
+            {{- end }}
             - name: GITHUB_APP_ID
               valueFrom:
                 secretKeyRef:
@@ -78,6 +82,10 @@ spec:
               value: {{ .Values.exporter.github.authType | lower | quote }}
             - name: EXPORTER_LOG_LEVEL
               value: {{ .Values.exporter.github.logLevel | default 4  | quote }}
+            {{- if .Values.exporter.github.baseUrl }}
+            - name: GITHUB_BASE_URL
+              value: {{ .Values.exporter.github.baseUrl | quote }}
+            {{- end }}
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
