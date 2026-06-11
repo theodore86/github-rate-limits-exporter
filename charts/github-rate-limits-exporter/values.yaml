@@ -31,9 +31,6 @@ service:
 replicaCount: 1
 terminationGracePeriodSeconds: 30
 imagePullSecrets: []
-serviceAccount:
-  create: true
-  annotations: {}
 serviceMonitor:
   enabled: false
   annotations: {}

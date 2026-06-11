@@ -88,7 +88,7 @@ tests:
             imagePullSecrets: []
             nodeSelector: {}
             securityContext: {}
-            serviceAccountName: my-release-github-rate-limits-exporter
+            automountServiceAccountToken: false
             terminationGracePeriodSeconds: 30
             tolerations: []
   - it: tests different values
@@ -170,8 +170,8 @@ tests:
           path: spec.template.metadata.labels.podLabel
           value: value
       - equal:
-          path: spec.template.spec.serviceAccountName
-          value: my-release-github-rate-limits-exporter
+          path: spec.template.spec.automountServiceAccountToken
+          value: false
       - equal:
           path: spec.template.spec.securityContext
           value:
@@ -278,9 +278,6 @@ tests:
     asserts:
       - equal:
           path: metadata.name
-          value: gh-rl-exporter-fullname
-      - equal:
-          path: spec.template.spec.serviceAccountName
           value: gh-rl-exporter-fullname
   - it: tests authtype pat
     template: deployment.yaml
