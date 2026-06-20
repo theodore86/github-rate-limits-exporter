@@ -197,3 +197,24 @@ def test_github_rate_limits_request_refresh_token(
     )
     assert github_mock.call_count == 1
     assert github_app_access_token_mock.call_count == 2
+
+
+def test_github_rate_limits_unwraps_resources(
+    freezer, github_mock, github_app_access_token_mock, github_app_requester
+):
+    """``get_rate_limits()`` must unwrap the ``resources`` key from PyGithub's
+    full ``raw_data`` so the collector sees per-resource maps at the top level.
+
+    Regression test for the silent-zero-metrics bug: the previous code returned
+    the full response, which has ``resources`` and ``rate`` at the top — so
+    callers doing ``rate_limits.core`` got an empty DotMap (defaulting to all
+    zeros) instead of the actual core limits.
+    """
+    freezer.move_to(CURRENT_TIME)
+    rate_limits = github_app_requester.get_rate_limits()
+    # Per-resource keys must be reachable directly, not via .resources.*
+    assert rate_limits.core.limit == 5000
+    assert rate_limits.search.limit == 30
+    # And .resources must NOT be a passthrough (i.e. we are not returning
+    # the full raw_data)
+    assert "resources" not in rate_limits

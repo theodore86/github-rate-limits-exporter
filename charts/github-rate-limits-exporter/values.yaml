@@ -31,12 +31,19 @@ service:
 replicaCount: 1
 terminationGracePeriodSeconds: 30
 imagePullSecrets: []
-serviceAccount:
-  create: true
-  annotations: {}
 serviceMonitor:
   enabled: false
   annotations: {}
+# Liveness and readiness probes for the exporter container.
+# The readiness probe scrapes the same /metrics endpoint Prometheus does,
+# which means every probe causes a real Github API rate-limit call. For
+# deployments where Prometheus already records scrape errors and you would
+# rather not double the load on Github's rate-limit endpoint (or burn
+# tokens against a private GHE quota), set this to false. The exporter is
+# stateless and Prometheus's scrape-error metrics are sufficient for
+# alerting in that case.
+probes:
+  enabled: true
 resources:
   limits:
     cpu: 100m

@@ -88,7 +88,7 @@ tests:
             imagePullSecrets: []
             nodeSelector: {}
             securityContext: {}
-            serviceAccountName: my-release-github-rate-limits-exporter
+            automountServiceAccountToken: false
             terminationGracePeriodSeconds: 30
             tolerations: []
   - it: tests different values
@@ -170,8 +170,8 @@ tests:
           path: spec.template.metadata.labels.podLabel
           value: value
       - equal:
-          path: spec.template.spec.serviceAccountName
-          value: my-release-github-rate-limits-exporter
+          path: spec.template.spec.automountServiceAccountToken
+          value: false
       - equal:
           path: spec.template.spec.securityContext
           value:
@@ -279,9 +279,6 @@ tests:
       - equal:
           path: metadata.name
           value: gh-rl-exporter-fullname
-      - equal:
-          path: spec.template.spec.serviceAccountName
-          value: gh-rl-exporter-fullname
   - it: tests authtype pat
     template: deployment.yaml
     set:
@@ -309,3 +306,20 @@ tests:
                 secretKeyRef:
                   name: gh-rl-exporter
                   key: token
+  - it: probes are rendered by default
+    template: deployment.yaml
+    asserts:
+      - isNotNull:
+          path: spec.template.spec.containers[0].readinessProbe
+      - isNotNull:
+          path: spec.template.spec.containers[0].livenessProbe
+  - it: probes can be disabled
+    template: deployment.yaml
+    set:
+      probes:
+        enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.containers[0].readinessProbe
+      - isNull:
+          path: spec.template.spec.containers[0].livenessProbe
