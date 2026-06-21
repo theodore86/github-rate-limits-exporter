@@ -3,7 +3,7 @@ nameOverride: ""
 fullnameOverride: ""
 exporter:
   image: theodore86/prometheus-gh-rate-limit-exporter
-  tag: v0.7.6
+  tag: v0.10.0
   pullPolicy: IfNotPresent
   port: 10050
   # Definition of the github credentials for either PAT or APP credentials
@@ -22,6 +22,18 @@ exporter:
   #   mountPath: /secret
   #   privateKey: |
   #   ""
+  #
+  # For Github Enterprise Server, set baseUrl to the GHE API endpoint, e.g.:
+  #   baseUrl: "https://github.example.com/api/v3"
+  # Defaults to public github.com (https://api.github.com) when unset.
+  #
+  # For Github Enterprise instances using a private/corporate CA, provide the
+  # CA bundle in PEM format. The chart will create a ConfigMap, mount it at
+  # /etc/ssl/certs/custom-ca.crt and set REQUESTS_CA_BUNDLE so PyGithub trusts it:
+  #   caBundle: |
+  #     -----BEGIN CERTIFICATE-----
+  #     ...
+  #     -----END CERTIFICATE-----
   github: {}
 service:
   clusterIP: ""
@@ -34,6 +46,17 @@ imagePullSecrets: []
 serviceMonitor:
   enabled: false
   annotations: {}
+  labels: {}
+# Liveness and readiness probes for the exporter container.
+# The readiness probe scrapes the same /metrics endpoint Prometheus does,
+# which means every probe causes a real Github API rate-limit call. For
+# deployments where Prometheus already records scrape errors and you would
+# rather not double the load on Github's rate-limit endpoint (or burn
+# tokens against a private GHE quota), set this to false. The exporter is
+# stateless and Prometheus's scrape-error metrics are sufficient for
+# alerting in that case.
+probes:
+  enabled: true
 resources:
   limits:
     cpu: 100m

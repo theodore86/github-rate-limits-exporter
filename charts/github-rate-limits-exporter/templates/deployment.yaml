@@ -52,6 +52,14 @@ spec:
               value: {{ .Values.exporter.github.authType | lower | quote }}
             - name: EXPORTER_LOG_LEVEL
               value: {{ .Values.exporter.github.logLevel | default 4  | quote }}
+            {{- if .Values.exporter.github.baseUrl }}
+            - name: GITHUB_BASE_URL
+              value: {{ .Values.exporter.github.baseUrl | quote }}
+            {{- end }}
+            {{- if .Values.exporter.github.caBundle }}
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/ssl/certs/custom-ca.crt
+            {{- end }}
             - name: GITHUB_APP_ID
               valueFrom:
                 secretKeyRef:
@@ -64,10 +72,6 @@ spec:
                   key: installationID
             - name: GITHUB_APP_PRIVATE_KEY_PATH
               value: {{ printf "%s/privateKey" .Values.exporter.github.mountPath }}
-          volumeMounts:
-            - name: app-private-key
-              readOnly: true
-              mountPath: {{ .Values.exporter.github.mountPath | quote }}
           {{- else if eq (lower (.Values.exporter.github.authType | default "")) "pat" }}
             - name: GITHUB_ACCOUNT
               valueFrom:
@@ -78,16 +82,39 @@ spec:
               value: {{ .Values.exporter.github.authType | lower | quote }}
             - name: EXPORTER_LOG_LEVEL
               value: {{ .Values.exporter.github.logLevel | default 4  | quote }}
+            {{- if .Values.exporter.github.baseUrl }}
+            - name: GITHUB_BASE_URL
+              value: {{ .Values.exporter.github.baseUrl | quote }}
+            {{- end }}
+            {{- if .Values.exporter.github.caBundle }}
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/ssl/certs/custom-ca.crt
+            {{- end }}
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "github-rate-limits-exporter.fullname" . }}
                   key: token
           {{- end }}
+          {{- if or (eq (lower (.Values.exporter.github.authType | default "")) "app") .Values.exporter.github.caBundle }}
+          volumeMounts:
+            {{- if eq (lower (.Values.exporter.github.authType | default "")) "app" }}
+            - name: app-private-key
+              readOnly: true
+              mountPath: {{ .Values.exporter.github.mountPath | quote }}
+            {{- end }}
+            {{- if .Values.exporter.github.caBundle }}
+            - name: ca-bundle
+              readOnly: true
+              mountPath: /etc/ssl/certs/custom-ca.crt
+              subPath: ca.crt
+            {{- end }}
+          {{- end }}
           ports:
             - name: metrics
               containerPort: {{ .Values.exporter.port | int }}
               protocol: TCP
+          {{- if .Values.probes.enabled }}
           readinessProbe:
             httpGet:
               path: /metrics
@@ -97,13 +124,21 @@ spec:
             tcpSocket:
               port: metrics
             initialDelaySeconds: 10
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if eq (lower (.Values.exporter.github.authType | default "")) "app" }}
+      {{- if or (eq (lower (.Values.exporter.github.authType | default "")) "app") .Values.exporter.github.caBundle }}
       volumes:
+        {{- if eq (lower (.Values.exporter.github.authType | default "")) "app" }}
         - name: app-private-key
           secret:
             secretName: {{ template "github-rate-limits-exporter.fullname" . }}
+        {{- end }}
+        {{- if .Values.exporter.github.caBundle }}
+        - name: ca-bundle
+          configMap:
+            name: {{ template "github-rate-limits-exporter.fullname" . }}-ca-bundle
+        {{- end }}
       {{- end }}
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}

@@ -62,7 +62,7 @@ tests:
             affinity: {}
             containers:
               - env: null
-                image: theodore86/prometheus-gh-rate-limit-exporter:v0.7.6
+                image: theodore86/prometheus-gh-rate-limit-exporter:v0.10.0
                 imagePullPolicy: IfNotPresent
                 name: github-rate-limits-exporter
                 ports:
@@ -306,3 +306,56 @@ tests:
                 secretKeyRef:
                   name: gh-rl-exporter
                   key: token
+  - it: probes are rendered by default
+    template: deployment.yaml
+    asserts:
+      - isNotNull:
+          path: spec.template.spec.containers[0].readinessProbe
+      - isNotNull:
+          path: spec.template.spec.containers[0].livenessProbe
+  - it: probes can be disabled
+    template: deployment.yaml
+    set:
+      probes:
+        enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.containers[0].readinessProbe
+      - isNull:
+          path: spec.template.spec.containers[0].livenessProbe
+  - it: tests authtype pat with github enterprise baseUrl
+    template: deployment.yaml
+    set:
+      fullnameOverride: gh-rl-exporter
+      exporter:
+        github:
+          accountName: theodore86
+          authType: pat
+          token: 8rfdgf834343fgfvd
+          baseUrl: https://github.example.com/api/v3
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GITHUB_BASE_URL
+            value: https://github.example.com/api/v3
+  - it: tests authtype app with github enterprise baseUrl
+    template: deployment.yaml
+    set:
+      fullnameOverride: gh-rl-exporter
+      exporter:
+        github:
+          accountName: theodore86
+          authType: app
+          appID: "1234567"
+          installationID: "12345678"
+          mountPath: /secret
+          privateKey: |
+            myprivatekey
+          baseUrl: https://github.example.com/api/v3
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GITHUB_BASE_URL
+            value: https://github.example.com/api/v3
