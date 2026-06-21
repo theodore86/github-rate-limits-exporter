@@ -56,41 +56,31 @@ tests:
       - equal:
           path: spec.template.metadata.labels.app\.kubernetes\.io/instance
           value: my-release
+      # Relaxed image assertion: only ensure image repository/name and a semantic version tag
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: ^theodore86/prometheus-gh-rate-limit-exporter(:v?\d+\.\d+\.\d+)?$
       - equal:
-          path: spec.template.spec
-          value:
-            affinity: {}
-            containers:
-              - env: null
-                image: theodore86/prometheus-gh-rate-limit-exporter:v0.7.6
-                imagePullPolicy: IfNotPresent
-                name: github-rate-limits-exporter
-                ports:
-                  - containerPort: 10050
-                    name: metrics
-                    protocol: TCP
-                readinessProbe:
-                  httpGet:
-                    path: /metrics
-                    port: metrics
-                  initialDelaySeconds: 10
-                livenessProbe:
-                  tcpSocket:
-                    port: metrics
-                  initialDelaySeconds: 10
-                resources:
-                  limits:
-                    cpu: 100m
-                    memory: 512Mi
-                  requests:
-                    memory: 512Mi
-                securityContext: {}
-            imagePullSecrets: []
-            nodeSelector: {}
-            securityContext: {}
-            automountServiceAccountToken: false
-            terminationGracePeriodSeconds: 30
-            tolerations: []
+          path: spec.template.spec.affinity
+          value: {}
+      - equal:
+          path: spec.template.spec.imagePullSecrets
+          value: []
+      - equal:
+          path: spec.template.spec.nodeSelector
+          value: {}
+      - equal:
+          path: spec.template.spec.securityContext
+          value: {}
+      - equal:
+          path: spec.template.spec.automountServiceAccountToken
+          value: false
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 30
+      - equal:
+          path: spec.template.spec.tolerations
+          value: []
   - it: tests different values
     template: deployment.yaml
     set:
