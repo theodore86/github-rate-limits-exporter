@@ -1,0 +1,12 @@
+---
+{{- if .Values.exporter.github.caBundle }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "github-rate-limits-exporter.fullname" . }}-ca-bundle
+  labels:
+    {{- include "github-rate-limits-exporter.labels" . | nindent 4 }}
+data:
+  ca.crt: |-
+    {{- .Values.exporter.github.caBundle | nindent 4 }}
+{{- end }}

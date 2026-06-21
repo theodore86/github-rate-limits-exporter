@@ -10,10 +10,10 @@ from tests.utils import CURRENT_TIMESTAMP
 def test_add_metrics(
     github_app_access_token_mock,
     collector,
-    rate_limits_json,
+    rate_limits_resources,
     mock_unix_timestamp,
 ):
-    mock_resources = dotmap.DotMap(rate_limits_json)
+    mock_resources = dotmap.DotMap(rate_limits_resources)
     expected_metric = GaugeMetricFamily(
         "github_rate_limits_search",
         "API requests in search per hour",

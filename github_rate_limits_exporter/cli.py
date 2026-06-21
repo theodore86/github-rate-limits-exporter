@@ -74,6 +74,13 @@ def parsecli(
         help="github App private key path (optionally base64 encoded)",
     )
     parser.add_argument(
+        "--github-base-url",
+        dest="github_base_url",
+        default=os.getenv("GITHUB_BASE_URL", "https://api.github.com"),
+        help="github API base URL (e.g. https://ghe.example.com/api/v3 for"
+        " Github Enterprise Server), (default: %(default)s)",
+    )
+    parser.add_argument(
         "--bind-address",
         dest="bind_addr",
         default=os.getenv("EXPORTER_BIND_ADDRESS", default="0.0.0.0"),
