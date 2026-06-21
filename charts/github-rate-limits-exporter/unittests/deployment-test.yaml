@@ -90,6 +90,10 @@ tests:
             requests:
               memory: 512Mi
       - equal:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: ^theodore86/prometheus-gh-rate-limit-exporter(:v?\d+\.\d+\.\d+)?$
+      - equal:
           path: spec.template.spec.affinity
           value: {}
       - equal:
