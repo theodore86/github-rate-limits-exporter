@@ -30,7 +30,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "__DATASOURCE_UID__"
       },
       "description": "The time at which the current Github API Rate Limit window resets.",
       "fieldConfig": {
@@ -115,7 +115,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "__DATASOURCE_UID__"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -149,7 +149,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "__DATASOURCE_UID__"
       },
       "description": "Grafana dashboard to monitor Github Integration Manifest API Rate Limits",
       "fieldConfig": {
@@ -224,7 +224,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "__DATASOURCE_UID__"
           },
           "editorMode": "code",
           "expr": "github_rate_limits_integration_manifest{account=\"$account\", type=~\"limit|remaining|used\"}",
@@ -240,7 +240,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "__DATASOURCE_UID__"
       },
       "description": "Grafana dashboard to monitor Github GraphQL API Rate Limits",
       "fieldConfig": {
@@ -316,7 +316,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "__DATASOURCE_UID__"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -334,7 +334,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "__DATASOURCE_UID__"
       },
       "description": "Grafana dashboard to monitor Github Core API Rate Limits",
       "fieldConfig": {
@@ -403,7 +403,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "__DATASOURCE_UID__"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -423,7 +423,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "__DATASOURCE_UID__"
       },
       "description": "Grafana dashboard to monitor Github Search API Rate Limits",
       "fieldConfig": {
@@ -498,7 +498,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "__DATASOURCE_UID__"
           },
           "editorMode": "code",
           "expr": "github_rate_limits_search{account=\"$account\", type=~\"limit|remaining|used\"}",
@@ -513,7 +513,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "__DATASOURCE_UID__"
       },
       "description": "Grafana dashboard to monitor the retrieval and update of the code scanning alerts from a Github repository",
       "fieldConfig": {
@@ -603,7 +603,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "__DATASOURCE_UID__"
           },
           "editorMode": "code",
           "expr": "github_rate_limits_code_scanning_upload{account=\"$account\", type=~\"limit|remaining|used\"}",
@@ -634,7 +634,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "uid": "__DATASOURCE_UID__"
         },
         "definition": "label_values(github_rate_limits_core{type=~\"used|limit|remaining\"}, account)",
         "description": "Github account",
