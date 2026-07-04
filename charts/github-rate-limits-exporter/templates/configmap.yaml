@@ -20,7 +20,7 @@ items:
     {{- toYaml $.Values.grafana.annotations | nindent 6 }}
     {{- end }}    
   data:
-    {{ $dashboardName }}.json: {{ $.Files.Get $path | toJson }}
+    {{ $dashboardName }}.json: {{ $.Files.Get $path | replace "__DATASOURCE_UID__" $.Values.grafana.datasourceUid | toJson }}
 {{- end }}
 {{- end }}
 {{- end }}

@@ -68,6 +68,7 @@ grafana:
   enabled: false
   labels: {}
   annotations: {}
+  datasourceUid: "PBFA97CFB590B2093"
 podLabels: {}
 podAnnotations: {}
 podSecurityContext: {}
