@@ -13,7 +13,7 @@ releases:
   - name: kube-prometheus-stack
     namespace: monitoring
     chart: "prometheus-community/kube-prometheus-stack"
-    version: "67.7.0"
+    version: "87.6.0"
     values:
       - defaultRules:
           create: false
@@ -74,7 +74,7 @@ releases:
             app: "github-rate-limits-exporter"
         exporter:
           image: "theodore86/prometheus-gh-rate-limit-exporter"
-          tag: "v0.7.2"
+          tag: "v0.10.0"
     set:
       - name: exporter.github.accountName
         value: {{ requiredEnv "GITHUB_ACCOUNT" }}
