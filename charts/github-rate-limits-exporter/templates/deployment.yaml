@@ -46,7 +46,7 @@ spec:
             - name: GITHUB_ACCOUNT
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  name: {{ default (include "github-rate-limits-exporter.fullname" .) .Values.exporter.github.existingSecret }}
                   key: accountName
             - name: GITHUB_AUTH_TYPE
               value: {{ .Values.exporter.github.authType | lower | quote }}
@@ -63,12 +63,12 @@ spec:
             - name: GITHUB_APP_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  name: {{ default (include "github-rate-limits-exporter.fullname" .) .Values.exporter.github.existingSecret }}
                   key: appID
             - name: GITHUB_APP_INSTALLATION_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  name: {{ default (include "github-rate-limits-exporter.fullname" .) .Values.exporter.github.existingSecret }}
                   key: installationID
             - name: GITHUB_APP_PRIVATE_KEY_PATH
               value: {{ printf "%s/privateKey" .Values.exporter.github.mountPath }}
@@ -76,7 +76,7 @@ spec:
             - name: GITHUB_ACCOUNT
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  name: {{ default (include "github-rate-limits-exporter.fullname" .) .Values.exporter.github.existingSecret }}
                   key: accountName
             - name: GITHUB_AUTH_TYPE
               value: {{ .Values.exporter.github.authType | lower | quote }}
@@ -93,7 +93,7 @@ spec:
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "github-rate-limits-exporter.fullname" . }}
+                  name: {{ default (include "github-rate-limits-exporter.fullname" .) .Values.exporter.github.existingSecret }}
                   key: token
           {{- end }}
           {{- if or (eq (lower (.Values.exporter.github.authType | default "")) "app") .Values.exporter.github.caBundle }}
@@ -132,7 +132,7 @@ spec:
         {{- if eq (lower (.Values.exporter.github.authType | default "")) "app" }}
         - name: app-private-key
           secret:
-            secretName: {{ template "github-rate-limits-exporter.fullname" . }}
+            secretName: {{ default (include "github-rate-limits-exporter.fullname" .) .Values.exporter.github.existingSecret }}
         {{- end }}
         {{- if .Values.exporter.github.caBundle }}
         - name: ca-bundle
