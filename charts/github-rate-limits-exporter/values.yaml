@@ -34,6 +34,19 @@ exporter:
   #     -----BEGIN CERTIFICATE-----
   #     ...
   #     -----END CERTIFICATE-----
+  #
+  # To reference a Secret provisioned out-of-band (e.g. by a secrets operator)
+  # instead of having the chart create one from the values above, set
+  # existingSecret to its name. The chart will not render its own Secret and
+  # will point every credential reference at the named one. The Secret must
+  # expose the same keys the chart would otherwise create:
+  #   PAT: accountName, token
+  #   APP: accountName, appID, installationID, privateKey
+  # github:
+  #   authType: app
+  #   mountPath: /secret
+  #   existingSecret: my-github-credentials
+  #
   github: {}
 service:
   clusterIP: ""
