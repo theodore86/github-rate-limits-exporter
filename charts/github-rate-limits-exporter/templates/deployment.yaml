@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "github-rate-limits-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "github-rate-limits-exporter.labels" . | nindent 4 }}
     {{- if .Values.podLabels }}
