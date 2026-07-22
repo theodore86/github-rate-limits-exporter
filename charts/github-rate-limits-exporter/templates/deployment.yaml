@@ -9,6 +9,10 @@ metadata:
     {{- if .Values.podLabels }}
     {{- toYaml .Values.podLabels | nindent 4 }}
     {{- end }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
