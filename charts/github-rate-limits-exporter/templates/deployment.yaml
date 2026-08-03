@@ -3,11 +3,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "github-rate-limits-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "github-rate-limits-exporter.labels" . | nindent 4 }}
     {{- if .Values.podLabels }}
     {{- toYaml .Values.podLabels | nindent 4 }}
     {{- end }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
