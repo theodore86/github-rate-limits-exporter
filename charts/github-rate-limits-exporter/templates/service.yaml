@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "github-rate-limits-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "github-rate-limits-exporter.labels" . | nindent 4 }}
     {{- if .Values.service.labels }}

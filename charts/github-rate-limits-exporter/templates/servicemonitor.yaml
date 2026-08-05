@@ -4,6 +4,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "github-rate-limits-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "github-rate-limits-exporter.labels" . | nindent 4 }}
     {{- with .Values.serviceMonitor.labels }}

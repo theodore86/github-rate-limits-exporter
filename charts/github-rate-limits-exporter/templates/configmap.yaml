@@ -10,6 +10,7 @@ items:
   kind: ConfigMap
   metadata:
     name: {{ printf "%s-%s" (include "github-rate-limits-exporter.fullname" $) $dashboardName | trunc 63 | trimSuffix "-" }}
+    namespace: {{ $.Release.Namespace }}
     labels:
       {{- include "github-rate-limits-exporter.labels" $ | nindent 6 }}
       {{- if $.Values.grafana.labels }}
