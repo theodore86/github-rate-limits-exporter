@@ -1,0 +1,20 @@
+{
+  "name": "github-rate-limits-exporter (Python 3.12)",
+  "image": "mcr.microsoft.com/devcontainers/python:0-3.12",
+  "forwardPorts": [10050],
+  "postCreateCommand": "python3 -m pip install --upgrade pip && pip3 install tox",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "ms-python.mypy",
+        "ms-python.isort",
+        "ms-python.black-formatter",
+        "eamodio.gitlens"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}
