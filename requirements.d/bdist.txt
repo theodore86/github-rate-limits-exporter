@@ -3,5 +3,5 @@
 build==1.5.1
 twine==7.0.0
 check-wheel-contents==0.6.3
-setuptools>=83.0.0; python_version >= "3.12"
+setuptools>=84.0.0; python_version >= "3.12"
 wheel>=0.47.0; python_version >= "3.12"

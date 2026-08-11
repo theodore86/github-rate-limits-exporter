@@ -13,4 +13,4 @@ pytest-randomly==4.1.0; python_version >= "3.10"
 pytest-icdiff==0.9
 pytest-sugar==1.1.1
 pytest-freezegun==0.4.2
-setuptools>=83.0.0; python_version >= "3.12"
+setuptools>=84.0.0; python_version >= "3.12"
