@@ -62,7 +62,7 @@ tests:
             affinity: {}
             containers:
               - env: null
-                image: theodore86/prometheus-gh-rate-limit-exporter:v0.10.0
+                image: theodore86/prometheus-gh-rate-limit-exporter:v0.11.0
                 imagePullPolicy: IfNotPresent
                 name: github-rate-limits-exporter
                 ports:
@@ -118,7 +118,7 @@ tests:
         allowPrivilegeEscalation: false
       exporter:
         image: theodore86/prometheus-gh-rate-limit-exporter
-        tag: v0.7.1
+        tag: v0.11.0
         pullPolicy: Always
         port: 9090
         github:
@@ -215,7 +215,7 @@ tests:
           path: spec.template.spec.containers[0]
           value:
             name: github-rate-limits-exporter
-            image: theodore86/prometheus-gh-rate-limit-exporter:v0.7.1
+            image: theodore86/prometheus-gh-rate-limit-exporter:v0.11.0
             imagePullPolicy: Always
             securityContext:
               runAsUser: 1000
@@ -310,6 +310,74 @@ tests:
               valueFrom:
                 secretKeyRef:
                   name: gh-rl-exporter
+                  key: token
+  - it: app credentials are read from existingSecret
+    template: deployment.yaml
+    set:
+      fullnameOverride: gh-rl-exporter
+      exporter:
+        github:
+          accountName: theodore86
+          authType: app
+          mountPath: /secret
+          existingSecret: my-github-app-secret
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: GITHUB_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: my-github-app-secret
+                  key: accountName
+            - name: GITHUB_AUTH_TYPE
+              value: app
+            - name: EXPORTER_LOG_LEVEL
+              value: "4"
+            - name: GITHUB_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: my-github-app-secret
+                  key: appID
+            - name: GITHUB_APP_INSTALLATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: my-github-app-secret
+                  key: installationID
+            - name: GITHUB_APP_PRIVATE_KEY_PATH
+              value: /secret/privateKey
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: app-private-key
+              secret:
+                secretName: my-github-app-secret
+  - it: pat token is read from existingSecret
+    template: deployment.yaml
+    set:
+      fullnameOverride: gh-rl-exporter
+      exporter:
+        github:
+          accountName: theodore86
+          authType: pat
+          existingSecret: my-github-pat-secret
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: GITHUB_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: my-github-pat-secret
+                  key: accountName
+            - name: GITHUB_AUTH_TYPE
+              value: pat
+            - name: EXPORTER_LOG_LEVEL
+              value: "4"
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: my-github-pat-secret
                   key: token
   - it: probes are rendered by default
     template: deployment.yaml
