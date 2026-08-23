@@ -1,11 +1,16 @@
 # syntax = docker/dockerfile:1.9
-FROM python:3.12.13-slim AS base
+FROM python:3.12.14-slim AS base
 
 ARG PIP_DISABLE_PIP_VERSION_CHECK=1
 ARG PIP_NO_COMPILE=1
 ENV PYTHONFAULTHANDLER=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHON_PIP_VERSION=26.0.1
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install -U pip=="${PYTHON_PIP_VERSION}"
 
