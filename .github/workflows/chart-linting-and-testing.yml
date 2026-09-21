@@ -69,7 +69,7 @@ jobs:
 
       - name: "Generate and validate manifests"
         if: steps.list-changed.outputs.changed == 'true'
-        uses: "shivjm/helm-kubeconform-action@v0.2.0"
+        uses: "shivjm/helm-kubeconform-action@v0.3.0"
         with:
           chartsDirectory: "charts"
           kubernetesVersion: "${{ env.KUBERNETES_VERSION }}"
