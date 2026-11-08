@@ -23,7 +23,7 @@ jobs:
 
   build_test_and_publish_docker_image:
     needs: ["app_linting_and_testing"]
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-24.04"
     steps:
       - name: "Checkout SCM"
         uses: "actions/checkout@v7.0.1"

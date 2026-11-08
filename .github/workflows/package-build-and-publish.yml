@@ -18,7 +18,7 @@ jobs:
 
   build_and_publish_distribution:
     needs: ["app_linting_and_testing"]
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-24.04"
     steps:
       - name: "Checkout SCM"
         uses: "actions/checkout@v7.0.1"
@@ -80,7 +80,7 @@ jobs:
 
   install_distribution:
     needs: ["build_and_publish_distribution"]
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-24.04"
     strategy:
       fail-fast: true
       matrix:
