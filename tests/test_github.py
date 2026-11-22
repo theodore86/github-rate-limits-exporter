@@ -130,7 +130,7 @@ def test_github_app_installation_id(args, expectation, request):
     [
         ("dfgftgh4FSE#", CURRENT_TIME, does_not_raise()),
         ("token", "date", pytest.raises(ValueError)),
-        ("token", datetime(2023, 12, 23), pytest.raises(ValueError))
+        ("token", datetime(2023, 12, 23), pytest.raises(ValueError)),
     ],
 )
 def test_github_token_expires_at(token, expires_at, expectation):
@@ -206,25 +206,16 @@ def test_github_rate_limits_request_refresh_token(
 def test_github_rate_limits_unwraps_resources(
     freezer, github_mock, github_app_access_token_mock, github_app_requester
 ):
-    """``get_rate_limits()`` must unwrap the ``resources`` key from PyGithub's
-    full ``raw_data`` so the collector sees per-resource maps at the top level.
-
-    Regression test for the silent-zero-metrics bug: the previous code returned
-    the full response, which has ``resources`` and ``rate`` at the top — so
-    callers doing ``rate_limits.core`` got an empty DotMap (defaulting to all
-    zeros) instead of the actual core limits.
-    """
     freezer.move_to(CURRENT_TIME)
     rate_limits = github_app_requester.get_rate_limits()
-    # Per-resource keys must be reachable directly, not via .resources.*
     assert rate_limits.core.limit == 5000
     assert rate_limits.search.limit == 30
-    # And .resources must NOT be a passthrough (i.e. we are not returning
-    # the full raw_data)
     assert "resources" not in rate_limits
 
 
-def test_github_rate_limits_requester_pat_uses_base_url(mocker, freezer, private_key_str):
+def test_github_rate_limits_requester_pat_uses_base_url(
+    mocker, freezer, private_key_str
+):
     freezer.move_to(CURRENT_TIME)
     github_init = mocker.patch(
         "github_rate_limits_exporter.github.Github", autospec=True
