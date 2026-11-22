@@ -134,10 +134,14 @@ def test_github_base_url_default():
 def test_github_base_url_cli_argument():
     args = cli.parsecli(
         [
-            "--github-auth-type", "pat",
-            "--github-token", "tok",
-            "--github-account", "a",
-            "--github-base-url", "https://github.example.com/api/v3",
+            "--github-auth-type",
+            "pat",
+            "--github-token",
+            "tok",
+            "--github-account",
+            "a",
+            "--github-base-url",
+            "https://github.example.com/api/v3",
         ]
     )
     assert args.github_base_url == "https://github.example.com/api/v3"
