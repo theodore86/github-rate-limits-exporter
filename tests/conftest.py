@@ -6,7 +6,6 @@ import datetime
 import json
 import os
 import queue
-from unittest.mock import Mock, PropertyMock
 
 import dotmap
 import pytest
@@ -174,7 +173,7 @@ def github_mock(mocker, rate_limits_json):
     """Returns a Mock object of the Github.get_rate_limit attribute"""
     return mocker.patch(
         "github_rate_limits_exporter.github.Github.get_rate_limit",
-        return_value=Mock(raw_data=rate_limits_json),
+        return_value=mocker.Mock(raw_data=rate_limits_json),
         autospec=True,
     )
 
@@ -184,7 +183,7 @@ def github_app_access_token_mock(mocker, install_auth):
     """Returns a Mock object of the Githubapp.access_token attribute"""
     mock_token = mocker.patch(
         "github_rate_limits_exporter.github.GithubApp.access_token",
-        new_callable=PropertyMock,
+        new_callable=mocker.PropertyMock,
     )
     mock_token.side_effect = [
         install_auth(TOKEN_EXPIRES_AT),
@@ -220,14 +219,14 @@ def github_pat_requester(freezer):
     )
 
 
-@pytest.fixture(scope="module")
-def install_auth():
+@pytest.fixture
+def install_auth(mocker):
     """Factory fixture, returns an function object to create GithubApp installations"""
 
     def auth(expires_at):
         return InstallationAuthorization(
-            requester=None,
-            headers=None,
+            requester=mocker.Mock(),
+            headers={},
             attributes={
                 "token": "some-value",
                 "expires_at": expires_at,
